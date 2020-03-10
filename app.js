@@ -72,15 +72,12 @@ app.post('/login', function (req, res) {
             usuario: req.body.usuario,
             senha: req.body.senha,
         }
-        let retornoInsert = buscaAluno(dataRegister)
-        if(retornoInsert['status'] == 'ok'){
-            console.log('caiu aqui')
-            res.send({'status':'ok','desc':retornoInsert['desc']})
-        }else{
-
-            console.log('caiu aqui2')
-            res.send({'status':'erro','desc':'erro'})
-        }
+        let queryCodigo = "SELECT * FROM tb_aluno WHERE usuario = '"+dataRegister['usuario']+"' AND senha = '"+dataRegister['senha']+"'"
+        connection.query(queryCodigo,(err, retornoInsert) => {
+            console.log(JSON.stringify(retornoInsert))
+            if (err) return {'status':'erro','desc':err}
+            res.send({'status':'ok','desc':retornoInsert})
+        })        
     }catch(err){
         console.log('caiu aqui3' + err)
         res.send({'status':'erro','desc':'erro'})
@@ -91,11 +88,46 @@ app.post('/send_redacao', function (req, res) {
     res.send('Hello World!');
 })
 
+//Função que recebe uma mensagem de faleConosco e coloca no banco
+app.post('/faleconosco', function (req, res) {
+    try{
+        console.log('nova requisicao')
+        let dataRegister = {
+            id_aluno: req.body.id_aluno,
+            texto: req.body.texto,
+        }
+        let queryFale = "INSERT INTO tb_faleconosco (id_aluno,texto) VALUES ('"+dataRegister['id_aluno']+"','"+dataRegister['texto']+"')"
+        connection.query(queryFale, (err, result) => {
+            if (err) return {'status':'erro','desc':err}
+            retornoReq = result[0]
+            console.log(retornoReq)
+            return {'status':'ok','desc':result[0]}
+        })
+    }catch(err){
+        res.send({'status':'erro','desc':'erro ao inserir usuario'})
+    }
+})
+
 //Função que recebe a redação do proffesor e retorna para o aluno
 app.post('/send_redacao', function (req, res) {
     res.send('Hello World!');
 })
 
+//Função que recebe um parametro e retorna os dados do usuario para o perfil
+app.post('/get_aluno', function (req, res) {
+    try{
+        let queryCodigo = "SELECT * FROM tb_aluno WHERE id = '"+req.body.id+"'"
+        console.log(queryCodigo)
+        connection.query(queryCodigo,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err) return {'status':'erro','desc':err}
+            res.send({'status':'ok','desc':data})
+        })        
+    }catch(err){
+        console.log('caiu aqui3' + err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
 
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
@@ -140,24 +172,5 @@ function alteraCodigo(codigo){
         return {'status':'erro','desc':err}
     }finally{
         return {'status':'ok','desc':'ok'}
-    }
-}
-
-//Função que busca por um aluno pelo usuario e senha
-function buscaAluno(dataRegister){
-    try{
-        var retornoReq = ''
-        let queryCodigo = "SELECT * FROM tb_aluno WHERE usuario = '"+dataRegister['usuario']+"' AND senha = '"+dataRegister['senha']+"'"
-        console.log(queryCodigo)
-        connection.query(queryCodigo, (err, result) => {
-            if (err) return {'status':'erro','desc':err}
-            retornoReq = result[0]
-            console.log(retornoReq)
-            return {'status':'ok','desc':result[0]}
-        })
-    }catch(err){
-        return {'status':'erro','desc':err}
-    }finally{
-        return {'status':'ok','desc':retornoReq}
     }
 }
