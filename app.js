@@ -75,8 +75,12 @@ app.post('/login', function (req, res) {
         let queryCodigo = "SELECT * FROM tb_aluno WHERE usuario = '"+dataRegister['usuario']+"' AND senha = '"+dataRegister['senha']+"'"
         connection.query(queryCodigo,(err, retornoInsert) => {
             console.log(JSON.stringify(retornoInsert))
-            if (err) return {'status':'erro','desc':err}
-            res.send({'status':'ok','desc':retornoInsert})
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':retornoInsert})
+            }
         })        
     }catch(err){
         console.log('caiu aqui3' + err)
@@ -113,6 +117,28 @@ app.post('/send_redacao', function (req, res) {
     res.send('Hello World!');
 })
 
+//Função que recebe um parametro e retorna os dados do usuario para o pos_login
+app.post('/pos_login', function (req, res) {
+    try{
+        let queryCodigo = "SELECT * FROM tb_aluno WHERE id = '"+req.body.id+"'"
+        console.log(queryCodigo)
+        connection.query(queryCodigo,(err, data) => {
+            if(err){
+                res.send({'status':'erro','desc':err})
+            }else{                
+                if( data[0]['idade'] == null ||  data[0]['escolaridade'] == '' ||  data[0]['cidade'] ==  '' ||  data[0]['estado'] == ''){
+                    res.send({'status':'erro_campos','desc':'nao'})
+                }else{
+                    res.send({'status':'ok','desc':'ok'})
+                }
+            }
+        })        
+    }catch(err){
+        console.log('caiu aqui3' + err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+
 //Função que recebe um parametro e retorna os dados do usuario para o perfil
 app.post('/get_aluno', function (req, res) {
     try{
@@ -129,6 +155,76 @@ app.post('/get_aluno', function (req, res) {
     }
 })
 
+//Função que recebe os dados do perfil como parametro e os salva
+app.post('/salvaPerfil', function (req, res) {
+    try{
+        let queryPerfil = "UPDATE tb_aluno SET nome = '"+req.body.nome+"', "+
+                            "sobrenome = '"+req.body.sobrenome+"', "+
+                            "usuario = '"+req.body.usuario+"', "+
+                            "senha = '"+req.body.senha+"', "+
+                            "email = '"+req.body.email+"', "+
+                            "idade = '"+req.body.idade+"', "+
+                            "escolaridade = '"+req.body.escolaridade+"', "+
+                            "cidade = '"+req.body.cidade+"', "+
+                            "estado = '"+req.body.estado+"' WHERE id = '"+req.body.id+"'"
+        console.log(queryPerfil)
+        connection.query(queryPerfil,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':'ok'})
+            }
+        })        
+    }catch(err){
+        console.log('caiu aqui3' + err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+
+//Função que envia um comentario
+app.post('/enviaComentario', function (req, res) {
+    try{
+        let queryComentario = `INSERT INTO tb_faleconosco (id_aluno, texto) VALUES ('${req.body.id}','${req.body.comentario}')`
+        console.log(queryComentario)
+        connection.query(queryComentario,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':'ok'})
+            }
+        })        
+    }catch(err){
+        console.log('caiu aqui3' + err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+
+//Função que pega o tema da semana
+app.post('/get_tema', function (req, res) {
+    try{
+        let currentDay = new Date().getDate()
+        let currentMonth = new Date().getMonth() + 1
+        let currentYear = new Date().getFullYear()
+        let queryTema = `SELECT * FROM tb_tema WHERE dias like '%${currentDay}%' AND mes = '${currentMonth}' AND ano = '${currentYear}'`
+        console.log(queryTema)
+        connection.query(queryTema,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':data})
+            }
+        })        
+    }catch(err){
+        console.log('caiu aqui3' + err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
 })
