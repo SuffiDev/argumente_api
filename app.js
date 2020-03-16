@@ -19,7 +19,8 @@ var express = require('express')
 var bodyParser = require('body-parser')
 var app = express()
 let port = 3000
-app.use( bodyParser.json() )     
+var fs = require('fs')
+app.use( bodyParser.json({limit: '10mb', extended: true}) )     
 app.use(bodyParser.urlencoded({    
   extended: true
 }))
@@ -64,6 +65,7 @@ app.post('/register', function (req, res) {
     }
 })
       
+
 //Função que recebe os parametros do login e retorna os dados do usuario
 app.post('/login', function (req, res) {
     try{
@@ -89,9 +91,60 @@ app.post('/login', function (req, res) {
 })
 //Função que recebe a redação do aluno, salva e a sorteia para um dos proffesores
 app.post('/send_redacao', function (req, res) {
-    res.send('Hello World!');
+    console.log('nova redação recebida')
+    try{        
+        //caminho = '/var/www/arquivos_argumente/fotos_redacao/teste.png'
+        let dataAtual = new Date()
+        let nomeArquivo = req.body.idTema.toString() + dataAtual.getDay().toString() + dataAtual.getHours().toString() + dataAtual.getMinutes().toString() + dataAtual.getSeconds().toString() + '.png'
+        const caminho = `/home/matheus/arquivos_argumente/fotos_redacao/${nomeArquivo}`
+
+        fs.writeFile(caminho, req.body.imgPhoto, {encoding: 'base64'}, function(err) {
+            if(!err){
+                console.log('entrou aqui e agora eu vou salvar os dados no banco')
+                let dateComplete = getDateTime(dataAtual)
+                let queryRedacao = `INSERT INTO tb_redacao (id_aluno, id_tema, data_criacao, finalizado, caminho_imagem) VALUES ('${req.body.idAluno}','${req.body.idTema}','${dateComplete}','1','${caminho}')`
+                console.log(queryRedacao)
+                connection.query(queryRedacao, (err, result) => {
+                    console.log(err)
+                    if(err){
+                        res.send({'status':'erro','desc':err})
+                    }else{
+                        res.send({'status':'ok','desc':'ok'})
+                    }
+                })
+            }else{
+                res.send({'status':'erro','desc':err})
+            }
+        });
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
 })
 
+//Função que recebe a redação do aluno, salva e a sorteia para um dos proffesores
+app.post('/get_redacao', function (req, res) {
+    try{        
+        let tipo
+        if (req.body.tipoRedacao == 'finalizada'){
+            tipo = 1
+        }else{
+            tipo = 0
+        }
+        let queryRedacao = `select tema.tema, redacao.id, tema.id as idtema from tb_redacao redacao INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE redacao.finalizado = '${tipo}' and redacao.id_aluno = '${req.body.idAluno}'`
+        connection.query(queryRedacao, (err, result) => {
+            console.log(err)
+            if(err){
+                res.send({'status':'erro','desc':err})
+            }else{
+                res.send({'status':'ok','desc':result})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
 //Função que recebe uma mensagem de faleConosco e coloca no banco
 app.post('/faleconosco', function (req, res) {
     try{
@@ -269,4 +322,31 @@ function alteraCodigo(codigo){
     }finally{
         return {'status':'ok','desc':'ok'}
     }
+}
+
+//Função que monta a Datestring do formato correto
+function getDateTime(now) {
+    var year    = now.getFullYear();
+    var month   = now.getMonth()+1; 
+    var day     = now.getDate();
+    var hour    = now.getHours();
+    var minute  = now.getMinutes();
+    var second  = now.getSeconds(); 
+    if(month.toString().length == 1) {
+         month = '0'+month;
+    }
+    if(day.toString().length == 1) {
+         day = '0'+day;
+    }   
+    if(hour.toString().length == 1) {
+         hour = '0'+hour;
+    }
+    if(minute.toString().length == 1) {
+         minute = '0'+minute;
+    }
+    if(second.toString().length == 1) {
+         second = '0'+second;
+    }   
+    var dateTime = year+'/'+month+'/'+day+' '+hour+':'+minute+':'+second;   
+     return dateTime;
 }
