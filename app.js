@@ -89,6 +89,41 @@ app.post('/login', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
+
+//Função que recebe os parametros do login do professor/admin e retorna os dados do usuario
+app.post('/loginAdmin', function (req, res) {
+    try{
+        console.log('nova requisicao')
+        let dataRegister = {
+            usuario: req.body.usuario,
+            senha: req.body.senha,
+            tipoUsuario: req.body.tipoUsuario,
+        }
+        let queryLogin
+        if(dataRegister['tipoUsuario'] == 'Professor'){
+            queryLogin = `SELECT * FROM tb_professor WHERE usuario = '${dataRegister['usuario']}' AND senha = '${dataRegister['senha']}'`
+        }else{
+            queryLogin = `SELECT * FROM tb_admin WHERE usuario = '${dataRegister['usuario']}' AND senha = '${dataRegister['senha']}'`
+        }
+        connection.query(queryLogin,(err, retornoInsert) => {
+            console.log(JSON.stringify(retornoInsert))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                if(retornoInsert.length == 0){
+                    res.send({'status':'erro_senha','desc':'erro'})
+                }else{
+                    res.send({'status':'ok','desc':retornoInsert})
+                }
+                console.log('foi')
+            }
+        })        
+    }catch(err){
+        console.log('caiu aqui3' + err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
 //Função que recebe a redação do aluno, salva e a sorteia para um dos proffesores
 app.post('/send_redacao', function (req, res) {
     console.log('nova redação recebida')
@@ -139,6 +174,87 @@ app.post('/get_redacao', function (req, res) {
             }else{
                 res.send({'status':'ok','desc':result})
             }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+
+//Função que recebe todas as redações ainda sem um professor linkado
+app.post('/getNovasRedacoes', function (req, res) {
+    try{  
+        let queryRedacao = `select redacao.id, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE id_professor IS NULL`
+        connection.query(queryRedacao, (err, result) => {
+            console.log(err)
+            if(err){
+                res.send({'status':'erro','desc':err})
+            }else{
+                console.log(result)
+                res.send({'status':'ok','desc':result})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+//Função que recebe dados de uma redação ainda não corrigida
+app.post('/getRedacaoId', function (req, res) {
+    try{  
+        let queryRedacao = `select redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE id_professor IS NULL and redacao.id = '${req.body.id}'`
+        connection.query(queryRedacao, (err, result) => {
+            console.log(err)
+            if(err){
+                res.send({'status':'erro','desc':err})
+            }else{
+                let jsonRetorno = []
+                let nomeArquivoQuebrado 
+                for(let i = 0; i < result.length;i++){
+                    nomeArquivoQuebrado = result[i]['caminhoImagem'].split('/')
+                    jsonRetorno.push({
+                        id:result[i]['id'],
+                        nome:result[i]['nome'],
+                        idAluno:result[i]['idaluno'],
+                        tema:result[i]['tema'],
+                        caminhoImg:base64_encode(result[i]['caminhoImagem']),
+                        nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
+                    })
+                }
+                console.log(nomeArquivoQuebrado[nomeArquivoQuebrado.length-1])                
+                res.send({'status':'ok','desc':jsonRetorno})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+//Função que recebe dados de uma correcao e salva no banco
+app.post('/sendCorrecao', function (req, res) {
+    try{  
+        console.log(`SELECT caminho_imagem FROM tb_redacao where id ='${req.body.idRedacao}'`)
+        connection.query(`SELECT caminho_imagem FROM tb_redacao where id ='${req.body.idRedacao}'`, (err, result) => {
+            console.log(req.body.dadosImagem)
+            fs.writeFile(result[0]['caminho_imagem'], req.body.dadosImagem, 'base64', function(err) {
+                if(!err){
+                    console.log('entrou aqui e agora eu vou salvar os dados no banco')
+                    let dateComplete = getDateTime(new Date())
+                    let queryRedacao = `INSERT INTO tb_correcao(id_redacao, observacao, usuario_envio, data) VALUES ('${req.body.idRedacao}','${req.body.observacoes}','${req.body.usuarioEnvio}','${dateComplete}')`
+                    connection.query(queryRedacao, (err, result) => {
+                        console.log(err)
+                        if(err){
+                            res.send({'status':'erro','desc':err})
+                        }else{         
+                            connection.query(`UPDATE tb_redacao SET id_professor = '${req.body.idProfessor}'`, (err, result) => {
+                                res.send({'status':'ok','desc':'ok'})
+                            })
+                        }
+                    })
+                }else{
+                    res.send({'status':'erro','desc':err})
+                }
+            })
         })
     }catch(err){
         console.log(err)
@@ -349,4 +465,11 @@ function getDateTime(now) {
     }   
     var dateTime = year+'/'+month+'/'+day+' '+hour+':'+minute+':'+second;   
      return dateTime;
+}
+// função que recebe o camiho de um arquivo, abre e transforma em base64 
+function base64_encode(file) {
+    // le o binario
+    var bitmap = fs.readFileSync(file);
+    // converte para base64 e retorna
+    return new Buffer(bitmap).toString('base64');
 }
