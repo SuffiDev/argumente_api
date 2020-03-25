@@ -100,6 +100,7 @@ app.post('/loginAdmin', function (req, res) {
             tipoUsuario: req.body.tipoUsuario,
         }
         let queryLogin
+        console.log(dataRegister['tipoUsuario'])
         if(dataRegister['tipoUsuario'] == 'Professor'){
             queryLogin = `SELECT * FROM tb_professor WHERE usuario = '${dataRegister['usuario']}' AND senha = '${dataRegister['senha']}'`
         }else{
@@ -208,21 +209,26 @@ app.post('/getRedacaoId', function (req, res) {
             if(err){
                 res.send({'status':'erro','desc':err})
             }else{
-                let jsonRetorno = []
-                let nomeArquivoQuebrado 
-                for(let i = 0; i < result.length;i++){
-                    nomeArquivoQuebrado = result[i]['caminhoImagem'].split('/')
-                    jsonRetorno.push({
-                        id:result[i]['id'],
-                        nome:result[i]['nome'],
-                        idAluno:result[i]['idaluno'],
-                        tema:result[i]['tema'],
-                        caminhoImg:base64_encode(result[i]['caminhoImagem']),
-                        nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
-                    })
+                try{
+                    let jsonRetorno = []
+                    let nomeArquivoQuebrado 
+                    for(let i = 0; i < result.length;i++){
+                        nomeArquivoQuebrado = result[i]['caminhoImagem'].split('/')
+                        jsonRetorno.push({
+                            id:result[i]['id'],
+                            nome:result[i]['nome'],
+                            idAluno:result[i]['idaluno'],
+                            tema:result[i]['tema'],
+                            caminhoImg:base64_encode(result[i]['caminhoImagem']),
+                            nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
+                        })
+                    }
+                    console.log(nomeArquivoQuebrado[nomeArquivoQuebrado.length-1])                
+                    res.send({'status':'ok','desc':jsonRetorno})                    
+                }catch(err){
+                    console.log(err)
+                    res.send({'status':'erro','desc':'erro'})
                 }
-                console.log(nomeArquivoQuebrado[nomeArquivoQuebrado.length-1])                
-                res.send({'status':'ok','desc':jsonRetorno})
             }
         })
     }catch(err){
@@ -246,7 +252,7 @@ app.post('/sendCorrecao', function (req, res) {
                         if(err){
                             res.send({'status':'erro','desc':err})
                         }else{         
-                            connection.query(`UPDATE tb_redacao SET id_professor = '${req.body.idProfessor}'`, (err, result) => {
+                            connection.query(`UPDATE tb_redacao SET id_professor = '${req.body.idProfessor}' WHERE id = '${req.body.idRedacao}'`, (err, result) => {
                                 res.send({'status':'ok','desc':'ok'})
                             })
                         }
@@ -312,6 +318,22 @@ app.post('/pos_login', function (req, res) {
 app.post('/get_aluno', function (req, res) {
     try{
         let queryCodigo = "SELECT * FROM tb_aluno WHERE id = '"+req.body.id+"'"
+        console.log(queryCodigo)
+        connection.query(queryCodigo,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err) return {'status':'erro','desc':err}
+            res.send({'status':'ok','desc':data})
+        })        
+    }catch(err){
+        console.log('caiu aqui3' + err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+
+//Função que recebe um parametro e retorna os dados do usuario para o perfil do Professor
+app.post('/getProfessor', function (req, res) {
+    try{
+        let queryCodigo = "SELECT * FROM tb_professor WHERE id = '"+req.body.id+"'"
         console.log(queryCodigo)
         connection.query(queryCodigo,(err, data) => {
             console.log(JSON.stringify(data))
