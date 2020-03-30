@@ -570,7 +570,7 @@ app.post('/get_tema', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-app.listen(80,'0.0.0.0', function () {
+app.listen(8080,'0.0.0.0', function () {
     console.log('Example app listening on port 3000!');
 })
 
