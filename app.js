@@ -157,6 +157,129 @@ app.post('/send_redacao', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
+//Função que recebe as correçoes das redações
+app.post('/getCorrecoesRedacao', function (req, res) {
+    console.log('nova redação recebida')
+    try{        
+        let queryCorrecao = `SELECT * FROM tb_correcao WHERE id_redacao = '${req.body.id}'`
+        connection.query(queryCorrecao, (err, result) => {
+            console.log(err)
+            if(err){
+                console.log(err)
+                res.send({'status':'erro','desc':err})
+            }else{
+                console.log(result)
+                res.send({'status':'ok','desc':result})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+//Função que retorna todos os codigos
+app.post('/getCodigos', function (req, res) {
+    console.log('nova redação recebida')
+    try{        
+        let queryCorrecao = `SELECT * FROM tb_codigo`
+        connection.query(queryCorrecao, (err, result) => {
+            console.log(err)
+            if(err){
+                console.log(err)
+                res.send({'status':'erro','desc':err})
+            }else{
+                console.log(result)
+                res.send({'status':'ok','desc':result})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+//Função que retorna um codigo especifico
+app.post('/getCodigo', function (req, res) {
+    try{        
+        let queryCorrecao = `SELECT * FROM tb_codigo WHERE id = '${req.body.id}'`
+        connection.query(queryCorrecao, (err, result) => {
+            console.log(err)
+            if(err){
+                console.log(err)
+                res.send({'status':'erro','desc':err})
+            }else{
+                console.log(result)
+                res.send({'status':'ok','desc':result})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+//Função que retorna um codigo especifico
+app.post('/alterarCodigo', function (req, res) {
+    try{        
+        let queryCorrecao = `UPDATE tb_codigo SET codigo = '${req.body.codigo}', quantidade = '${req.body.quantidade}', parceiro = '${req.body.parceiro}' WHERE id = '${req.body.id}'`
+        connection.query(queryCorrecao, (err, result) => {
+            try{
+                console.log(err)
+                if(err){
+                    console.log(err)
+                    res.send({'status':'erro','desc':err})
+                }else{
+                    console.log(result)
+                    res.send({'status':'ok','desc':'ok'})
+                }
+            }catch(err){
+                console.log(err)
+                res.send({'status':'erro','desc':'erro'})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+//Função que retorna um codigo especifico
+app.post('/salvarCodigo', function (req, res) {
+    console.log('nova redação recebida')
+    try{        
+        let queryCodigo = `INSERT INTO tb_codigo (codigo, parceiro, quantidade) VALUES ('${req.body.codigo}','${req.body.parceiro}','${req.body.quantidade}')`
+        connection.query(queryCodigo, (err, result) => {
+            console.log(err)
+            if(err){
+                console.log(err)
+                res.send({'status':'erro','desc':err})
+            }else{
+                console.log(result)
+                res.send({'status':'ok','desc':result})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+//Função que retorna um codigo especifico
+app.post('/cadastrarProfessor', function (req, res) {
+    console.log('nova redação recebida')
+    try{        
+        let queryCodigo = `INSERT INTO tb_professor (nome, sobreNome, escola, cidade, estado, usuario, senha) VALUES ('${req.body.nome}','${req.body.sobreNome}','${req.body.escola}','${req.body.cidade}','${req.body.estado}','${req.body.usuario}','${req.body.senha}')`
+        connection.query(queryCodigo, (err, result) => {
+            console.log(err)
+            if(err){
+                console.log(err)
+                res.send({'status':'erro','desc':err})
+            }else{
+                console.log(result)
+                res.send({'status':'ok','desc':result})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
 
 //Função que recebe a redação do aluno, salva e a sorteia para um dos proffesores
 app.post('/get_redacao', function (req, res) {
@@ -185,7 +308,7 @@ app.post('/get_redacao', function (req, res) {
 //Função que recebe todas as redações ainda sem um professor linkado
 app.post('/getNovasRedacoes', function (req, res) {
     try{  
-        let queryRedacao = `select redacao.id, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE id_professor IS NULL`
+        let queryRedacao = `select redacao.id, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE id_professor IS NULL AND finalizado != 1`
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
             if(err){
@@ -203,7 +326,8 @@ app.post('/getNovasRedacoes', function (req, res) {
 //Função que recebe dados de uma redação ainda não corrigida
 app.post('/getRedacaoId', function (req, res) {
     try{  
-        let queryRedacao = `select redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE id_professor IS NULL and redacao.id = '${req.body.id}'`
+        let queryRedacao = `select redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE redacao.id = '${req.body.id}'`
+
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
             if(err){
@@ -236,6 +360,38 @@ app.post('/getRedacaoId', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
+//Função que recebe dados de uma redação já corrigida
+app.post('/getRedacoesCorrigidas', function (req, res) {
+    try{  
+        let queryRedacao = `select redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE redacao.id_professor = '${req.body.id}'`
+        console.log(queryRedacao)
+        connection.query(queryRedacao, (err, result) => {
+            console.log(err)
+            if(err){
+                res.send({'status':'erro','desc':err})
+            }else{
+                try{
+                    let jsonRetorno = []
+                    for(let i = 0; i < result.length;i++){
+                        jsonRetorno.push({
+                            id:result[i]['id'],
+                            nome:result[i]['nome'],
+                            idAluno:result[i]['idaluno'],
+                            tema:result[i]['tema'],
+                        })
+                    }            
+                    res.send({'status':'ok','desc':jsonRetorno})                    
+                }catch(err){
+                    console.log(err)
+                    res.send({'status':'erro','desc':'erro'})
+                }
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
 //Função que recebe dados de uma correcao e salva no banco
 app.post('/sendCorrecao', function (req, res) {
     try{  
@@ -252,7 +408,7 @@ app.post('/sendCorrecao', function (req, res) {
                         if(err){
                             res.send({'status':'erro','desc':err})
                         }else{         
-                            connection.query(`UPDATE tb_redacao SET id_professor = '${req.body.idProfessor}' WHERE id = '${req.body.idRedacao}'`, (err, result) => {
+                            connection.query(`UPDATE tb_redacao SET id_professor = '${req.body.idProfessor}', finalizado = '1' WHERE id = '${req.body.idRedacao}'`, (err, result) => {
                                 res.send({'status':'ok','desc':'ok'})
                             })
                         }
@@ -285,11 +441,6 @@ app.post('/faleconosco', function (req, res) {
     }catch(err){
         res.send({'status':'erro','desc':'erro ao inserir usuario'})
     }
-})
-
-//Função que recebe a redação do proffesor e retorna para o aluno
-app.post('/send_redacao', function (req, res) {
-    res.send('Hello World!');
 })
 
 //Função que recebe um parametro e retorna os dados do usuario para o pos_login
