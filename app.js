@@ -90,6 +90,9 @@ app.post('/login', function (req, res) {
     }
 })
 
+app.get('/teste', (req, res) => {
+    res.send('teste');
+})
 //Função que recebe os parametros do login do professor/admin e retorna os dados do usuario
 app.post('/loginAdmin', function (req, res) {
     try{
