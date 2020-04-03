@@ -96,7 +96,7 @@ app.get('/teste', (req, res) => {
 })
 //Função que recebe os parametros do login do professor/admin e retorna os dados do usuario
 app.post('/loginAdmin', function (req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "*")
+    //res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         console.log('nova requisicao')
         let dataRegister = {
