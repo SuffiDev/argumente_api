@@ -129,7 +129,7 @@ app.post('/loginAdmin', function (req, res) {
         })        
     }catch(err){
         console.log('caiu aqui3' + err)
-        res.send({'status':'erro','desc':'erro'})
+        res.send({'status':'erro','desc':err})
     }
 })
 //Função que recebe a redação do aluno, salva e a sorteia para um dos proffesores
