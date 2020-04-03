@@ -27,6 +27,7 @@ app.use(bodyParser.urlencoded({
 
 //Função que recebe os parametros do registro e retorna se deu certo ou não 
 app.post('/register', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         console.log('nova requisicao')
         let dataRegister = {
@@ -68,6 +69,7 @@ app.post('/register', function (req, res) {
 
 //Função que recebe os parametros do login e retorna os dados do usuario
 app.post('/login', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         console.log('nova requisicao')
         let dataRegister = {
@@ -96,7 +98,7 @@ app.get('/teste', (req, res) => {
 })
 //Função que recebe os parametros do login do professor/admin e retorna os dados do usuario
 app.post('/loginAdmin', function (req, res) {
-    //res.setHeader("Access-Control-Allow-Origin", "*")
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         console.log('nova requisicao')
         let dataRegister = {
@@ -132,6 +134,7 @@ app.post('/loginAdmin', function (req, res) {
 })
 //Função que recebe a redação do aluno, salva e a sorteia para um dos proffesores
 app.post('/send_redacao', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     console.log('nova redação recebida')
     try{        
         //caminho = '/var/www/arquivos_argumente/fotos_redacao/teste.png'
@@ -164,6 +167,7 @@ app.post('/send_redacao', function (req, res) {
 })
 //Função que recebe as correçoes das redações
 app.post('/getCorrecoesRedacao', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     console.log('nova redação recebida')
     try{        
         let queryCorrecao = `SELECT * FROM tb_correcao WHERE id_redacao = '${req.body.id}'`
@@ -184,6 +188,7 @@ app.post('/getCorrecoesRedacao', function (req, res) {
 })
 //Função que retorna todos os codigos
 app.post('/getCodigos', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     console.log('nova redação recebida')
     try{        
         let queryCorrecao = `SELECT * FROM tb_codigo`
@@ -204,6 +209,7 @@ app.post('/getCodigos', function (req, res) {
 })
 //Função que retorna um codigo especifico
 app.post('/getCodigo', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{        
         let queryCorrecao = `SELECT * FROM tb_codigo WHERE id = '${req.body.id}'`
         connection.query(queryCorrecao, (err, result) => {
@@ -223,6 +229,7 @@ app.post('/getCodigo', function (req, res) {
 })
 //Função que retorna um codigo especifico
 app.post('/alterarCodigo', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{        
         let queryCorrecao = `UPDATE tb_codigo SET codigo = '${req.body.codigo}', quantidade = '${req.body.quantidade}', parceiro = '${req.body.parceiro}' WHERE id = '${req.body.id}'`
         connection.query(queryCorrecao, (err, result) => {
@@ -247,6 +254,7 @@ app.post('/alterarCodigo', function (req, res) {
 })
 //Função que retorna um codigo especifico
 app.post('/salvarCodigo', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     console.log('nova redação recebida')
     try{        
         let queryCodigo = `INSERT INTO tb_codigo (codigo, parceiro, quantidade) VALUES ('${req.body.codigo}','${req.body.parceiro}','${req.body.quantidade}')`
@@ -267,6 +275,7 @@ app.post('/salvarCodigo', function (req, res) {
 })
 //Função que retorna um codigo especifico
 app.post('/cadastrarProfessor', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     console.log('nova redação recebida')
     try{        
         let queryCodigo = `INSERT INTO tb_professor (nome, sobreNome, escola, cidade, estado, usuario, senha) VALUES ('${req.body.nome}','${req.body.sobreNome}','${req.body.escola}','${req.body.cidade}','${req.body.estado}','${req.body.usuario}','${req.body.senha}')`
@@ -288,6 +297,7 @@ app.post('/cadastrarProfessor', function (req, res) {
 
 //Função que recebe a redação do aluno, salva e a sorteia para um dos proffesores
 app.post('/get_redacao', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{        
         let tipo
         if (req.body.tipoRedacao == 'finalizada'){
@@ -312,6 +322,7 @@ app.post('/get_redacao', function (req, res) {
 
 //Função que recebe todas as redações ainda sem um professor linkado
 app.post('/getNovasRedacoes', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
         let queryRedacao = `select redacao.id, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE id_professor IS NULL AND finalizado != 1`
         connection.query(queryRedacao, (err, result) => {
@@ -330,6 +341,7 @@ app.post('/getNovasRedacoes', function (req, res) {
 })
 //Função que recebe dados de uma redação ainda não corrigida
 app.post('/getRedacaoId', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
         let queryRedacao = `select redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE redacao.id = '${req.body.id}'`
 
@@ -367,6 +379,7 @@ app.post('/getRedacaoId', function (req, res) {
 })
 //Função que recebe dados de uma redação já corrigida
 app.post('/getRedacoesCorrigidas', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
         let queryRedacao = `select redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE redacao.id_professor = '${req.body.id}'`
         console.log(queryRedacao)
@@ -399,6 +412,7 @@ app.post('/getRedacoesCorrigidas', function (req, res) {
 })
 //Função que recebe dados de uma correcao e salva no banco
 app.post('/sendCorrecao', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
         console.log(`SELECT caminho_imagem FROM tb_redacao where id ='${req.body.idRedacao}'`)
         connection.query(`SELECT caminho_imagem FROM tb_redacao where id ='${req.body.idRedacao}'`, (err, result) => {
@@ -430,6 +444,7 @@ app.post('/sendCorrecao', function (req, res) {
 })
 //Função que recebe uma mensagem de faleConosco e coloca no banco
 app.post('/faleconosco', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         console.log('nova requisicao')
         let dataRegister = {
@@ -450,6 +465,7 @@ app.post('/faleconosco', function (req, res) {
 
 //Função que recebe um parametro e retorna os dados do usuario para o pos_login
 app.post('/pos_login', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         let queryCodigo = "SELECT * FROM tb_aluno WHERE id = '"+req.body.id+"'"
         console.log(queryCodigo)
@@ -472,6 +488,7 @@ app.post('/pos_login', function (req, res) {
 
 //Função que recebe um parametro e retorna os dados do usuario para o perfil
 app.post('/get_aluno', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         let queryCodigo = "SELECT * FROM tb_aluno WHERE id = '"+req.body.id+"'"
         console.log(queryCodigo)
@@ -488,6 +505,7 @@ app.post('/get_aluno', function (req, res) {
 
 //Função que recebe um parametro e retorna os dados do usuario para o perfil do Professor
 app.post('/getProfessor', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         let queryCodigo = "SELECT * FROM tb_professor WHERE id = '"+req.body.id+"'"
         console.log(queryCodigo)
@@ -504,6 +522,7 @@ app.post('/getProfessor', function (req, res) {
 
 //Função que recebe os dados do perfil como parametro e os salva
 app.post('/salvaPerfil', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         let queryPerfil = "UPDATE tb_aluno SET nome = '"+req.body.nome+"', "+
                             "sobrenome = '"+req.body.sobrenome+"', "+
@@ -532,6 +551,7 @@ app.post('/salvaPerfil', function (req, res) {
 
 //Função que envia um comentario
 app.post('/enviaComentario', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         let queryComentario = `INSERT INTO tb_faleconosco (id_aluno, texto) VALUES ('${req.body.id}','${req.body.comentario}')`
         console.log(queryComentario)
@@ -552,6 +572,7 @@ app.post('/enviaComentario', function (req, res) {
 
 //Função que pega o tema da semana
 app.post('/get_tema', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         let currentDay = new Date().getDate()
         let currentMonth = new Date().getMonth() + 1
