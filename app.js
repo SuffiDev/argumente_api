@@ -593,9 +593,74 @@ app.post('/get_tema', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
+
+//Função que recebe os dados do Tema e o salva
+app.post('/salvaTema', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{
+        let dados = req.body
+        let mes = acertaMes(req.body.mes)
+        let queryTema =  `INSERT INTO tb_tema (tema, dias, mes, ano, apoio_pdf, apoio_web, apoio_video) VALUES ('${dados.tema}','${dados.dias}','${mes}','${dados.ano}','${dados.apoio_pdf}','${dados.apoio_web}','${dados.apoio_video}');`
+        connection.query(queryTema,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':'ok'})
+            }
+        })        
+    }catch(err){
+        console.log('caiu aqui3' + err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
 app.listen(3000,'0.0.0.0', function () {
     console.log('Example app listening on port 3000!');
 })
+//Função que transforma o mes de texto para numero
+function acertaMes(mes){
+    let mesFinal = ''
+    switch (mes){
+        case 'Janeiro':
+            mesFinal = '01'
+            break
+        case 'Fevereiro':
+            mesFinal = '02'
+            break
+        case 'Março':
+            mesFinal = '03'
+            break
+        case 'Abril':
+            mesFinal = '04'
+            break
+        case 'Maio':
+            mesFinal = '05'
+            break
+        case 'Junho':
+            mesFinal = '06'
+            break
+        case 'Julho':
+            mesFinal = '07'
+            break
+        case 'Agosto':
+            mesFinal = '08'
+            break
+        case 'Setembro':
+            mesFinal = '09'
+            break
+        case 'Outubro':
+            mesFinal = '10'
+            break
+        case 'Novembro':
+            mesFinal = '11'
+            break
+        case 'Dezembro':
+            mesFinal = '12'
+            break
+    }
+    return mesFinal
+}
 
 //Função que insere um novo aluno na tabela
 function insereAlunos(dataRegister){
