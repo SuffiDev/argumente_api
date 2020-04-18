@@ -292,7 +292,25 @@ app.post('/getProfessores', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
+//Função que recebe todos os temas cadastrados
+app.post('/getTemas', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{  
+        let queryProf = `SELECT * FROM tb_tema`
+        connection.query(queryProf, (err, result) => {
+            console.log(err)
+            if(err){
+                res.send({'status':'erro','desc':err})
+            }else{
+                console.log(result)
+                res.send({'status':'ok','desc':result})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
 //Função que  cadastra um novo professor
 app.post('/cadastrarProfessor', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
