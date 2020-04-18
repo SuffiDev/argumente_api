@@ -273,6 +273,26 @@ app.post('/salvarCodigo', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
+//Função que recebe todos os professores cadastrados
+app.post('/getNovasRedacoes', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{  
+        let queryProf = `SELECT * FROM tb_professor`
+        connection.query(queryProf, (err, result) => {
+            console.log(err)
+            if(err){
+                res.send({'status':'erro','desc':err})
+            }else{
+                console.log(result)
+                res.send({'status':'ok','desc':result})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+
 //Função que retorna um codigo especifico
 app.post('/cadastrarProfessor', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
