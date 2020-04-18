@@ -274,7 +274,7 @@ app.post('/salvarCodigo', function (req, res) {
     }
 })
 //Função que recebe todos os professores cadastrados
-app.post('/getNovasRedacoes', function (req, res) {
+app.post('/getProfessor', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
         let queryProf = `SELECT * FROM tb_professor`
