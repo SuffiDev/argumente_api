@@ -274,7 +274,7 @@ app.post('/salvarCodigo', function (req, res) {
     }
 })
 //Função que recebe todos os professores cadastrados
-app.post('/getProfessor', function (req, res) {
+app.post('/getProfessores', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
         let queryProf = `SELECT * FROM tb_professor`
@@ -293,7 +293,7 @@ app.post('/getProfessor', function (req, res) {
     }
 })
 
-//Função que retorna um codigo especifico
+//Função que  cadastra um novo professor
 app.post('/cadastrarProfessor', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     console.log('nova redação recebida')
@@ -533,6 +533,57 @@ app.post('/getProfessor', function (req, res) {
             console.log(JSON.stringify(data))
             if (err) return {'status':'erro','desc':err}
             res.send({'status':'ok','desc':data})
+        })        
+    }catch(err){
+        console.log('caiu aqui3' + err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+
+//Função que recebe os dados do professor e os salva
+app.post('/salvaProfessor', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{
+        let queryPerfil = "UPDATE tb_professor SET nome = '"+req.body.nome+"', "+
+                            "sobrenome = '"+req.body.sobrenome+"', "+
+                            "escola = '"+req.body.escola+"', "+
+                            "cidade = '"+req.body.cidade+"', "+
+                            "estado = '"+req.body.estado+"', "+
+                            "usuario = '"+req.body.usuario+"', "+
+                            "senha = '"+req.body.senha+"'  WHERE id = '"+req.body.id+"'"
+        console.log(queryPerfil)
+        connection.query(queryPerfil,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':'ok'})
+            }
+        })        
+    }catch(err){
+        console.log('caiu aqui3' + err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+
+//Função que recebe os dados do Admin
+app.post('/salvaAdmin', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{
+        let queryPerfil = "UPDATE tb_admin SET nome = '"+req.body.nome+"', "+
+                            "sobrenome = '"+req.body.sobrenome+"', "+
+                            "usuario = '"+req.body.usuario+"', "+
+                            "senha = '"+req.body.senha+"', WHERE id = '"+req.body.id+"'"
+        console.log(queryPerfil)
+        connection.query(queryPerfil,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':'ok'})
+            }
         })        
     }catch(err){
         console.log('caiu aqui3' + err)
