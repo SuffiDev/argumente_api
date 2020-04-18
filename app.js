@@ -524,7 +524,7 @@ app.post('/get_aluno', function (req, res) {
 })
 
 //Função que recebe um parametro e retorna os dados do usuario para o perfil do Professor
-app.post('/getProfessor', function (req, res) {
+app.post('/getProfessores', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         let queryCodigo = "SELECT * FROM tb_professor WHERE id = '"+req.body.id+"'"
