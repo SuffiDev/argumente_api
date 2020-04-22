@@ -585,6 +585,63 @@ app.post('/salvaProfessor', function (req, res) {
     }
 })
 
+//Função que deleta um professor
+app.post('/deletaProfessor', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{
+        let queryProf = `DELETE FROM tb_professor WHERE id = '${req.body.id}'`
+        connection.query(queryProf,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':'ok'})
+            }
+        })        
+    }catch(err){
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+
+//Função que deleta um tema
+app.post('/deletaTema', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{
+        let queryTema = `DELETE FROM tb_tema WHERE id = '${req.body.id}'`
+        connection.query(queryTema,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':'ok'})
+            }
+        })        
+    }catch(err){
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+
+//Função que deleta um Codigo
+app.post('/deletaCodigo', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{
+        let queryCodigo = `DELETE FROM tb_vodigo WHERE id = '${req.body.id}'`
+        connection.query(queryCodigo,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':'ok'})
+            }
+        })        
+    }catch(err){
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+
 //Função que recebe os dados do Admin
 app.post('/salvaAdmin', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
