@@ -689,7 +689,7 @@ app.post('/salvaTema', function (req, res) {
     try{
         let dados = req.body
         let mes = acertaMes(req.body.mes)
-        let queryTema =  `INSERT INTO tb_tema (tema, dias, mes, ano, apoio_pdf, apoio_web, apoio_video) VALUES ('${dados.tema}','${dados.dias}','${mes}','${dados.ano}','${dados.apoio_pdf}','${dados.apoio_web}','${dados.apoio_video}');`
+        let queryTema =  `INSERT INTO tb_tema (tema, dias, mes, ano, apoio_pdf, apoio_web, apoio_video) VALUES ('${dados.tema}','${dados.dias}','${mes}','${dados.ano}','${dados.apoioPdf}','${dados.apoioWeb}','${dados.apoioVideo}');`
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
             if (err){
