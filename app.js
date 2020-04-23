@@ -140,7 +140,7 @@ app.post('/send_redacao', function (req, res) {
         //caminho = '/var/www/arquivos_argumente/fotos_redacao/teste.png'
         let dataAtual = new Date()
         let nomeArquivo = req.body.idTema.toString() + dataAtual.getDay().toString() + dataAtual.getHours().toString() + dataAtual.getMinutes().toString() + dataAtual.getSeconds().toString() + '.png'
-        const caminho = `/home/matheus/arquivos_argumente/fotos_redacao/${nomeArquivo}`
+        const caminho = `/home/apiNode/argumente_api/fotos_redacao/${nomeArquivo}`
 
         fs.writeFile(caminho, req.body.imgPhoto, {encoding: 'base64'}, function(err) {
             if(!err){
