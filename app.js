@@ -788,7 +788,7 @@ app.post('/editaTema', function (req, res) {
     try{
         let dados = req.body
         let mes = acertaMes(req.body.mes)
-        let queryTema =  `UPDATE tb_tema SET tema = '${dados.tema}', dias='${dados.dias}', mes='${mes}', ano='${dados.ano}', apoio_pdf='${dados.apoioPdf}', apoio_web='${dados.apoioWeb}', apoio_video='${dados.apoioVideo}';`
+        let queryTema =  `UPDATE tb_tema SET tema = '${dados.tema}', dias='${dados.dias}', mes='${mes}', ano='${dados.ano}', apoio_pdf='${dados.apoioPdf}', apoio_web='${dados.apoioWeb}', apoio_video='${dados.apoioVideo}' WHERE id = '${req.body.id}';`
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
             if (err){
