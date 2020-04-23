@@ -627,7 +627,7 @@ app.post('/deletaTema', function (req, res) {
 app.post('/deletaCodigo', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
-        let queryCodigo = `DELETE FROM tb_vodigo WHERE id = '${req.body.id}'`
+        let queryCodigo = `DELETE FROM tb_codigo WHERE id = '${req.body.id}'`
         connection.query(queryCodigo,(err, data) => {
             console.log(JSON.stringify(data))
             if (err){
