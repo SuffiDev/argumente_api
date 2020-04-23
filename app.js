@@ -761,6 +761,28 @@ app.post('/salvaTema', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
+
+//Função que recebe os dados do Tema e o salva
+app.post('/editaTema', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{
+        let dados = req.body
+        let mes = acertaMes(req.body.mes)
+        let queryTema =  `UPDATE tb_tema SET tema = '${dados.tema}', dias='${dados.dias}', mes='${mes}', ano='${dados.ano}', apoio_pdf='${dados.apoioPdf}', apoio_web='${dados.apoioWeb}', apoio_video='${dados.apoioVideo}');`
+        connection.query(queryTema,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':'ok'})
+            }
+        })        
+    }catch(err){
+        console.log('caiu aqui3' + err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
 app.listen(3000,'0.0.0.0', function () {
     console.log('Example app listening on port 3000!');
 })
