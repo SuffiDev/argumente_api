@@ -740,6 +740,26 @@ app.post('/get_tema', function (req, res) {
     }
 })
 
+
+//Função que recebe um tema cadastrado
+app.post('/getTema', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{  
+        let queryProf = `SELECT * FROM tb_tema WHERE id = '${req.body.id}'`
+        connection.query(queryProf, (err, result) => {
+            console.log(err)
+            if(err){
+                res.send({'status':'erro','desc':err})
+            }else{
+                console.log(result)
+                res.send({'status':'ok','desc':result})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
 //Função que recebe os dados do Tema e o salva
 app.post('/salvaTema', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
