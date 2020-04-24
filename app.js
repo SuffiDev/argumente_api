@@ -146,7 +146,7 @@ app.post('/send_redacao', function (req, res) {
             if(!err){
                 console.log('entrou aqui e agora eu vou salvar os dados no banco')
                 let dateComplete = getDateTime(dataAtual)
-                let queryRedacao = `INSERT INTO tb_redacao (id_aluno, id_tema, data_criacao, finalizado, caminho_imagem) VALUES ('${req.body.idAluno}','${req.body.idTema}','${dateComplete}','1','${caminho}')`
+                let queryRedacao = `INSERT INTO tb_redacao (id_aluno, id_tema, data_criacao, finalizado, caminho_imagem) VALUES ('${req.body.idAluno}','${req.body.idTema}','${dateComplete}','0','${caminho}')`
                 console.log(queryRedacao)
                 connection.query(queryRedacao, (err, result) => {
                     console.log(err)
@@ -169,7 +169,7 @@ app.post('/send_redacao', function (req, res) {
 app.post('/getCorrecoesRedacao', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     console.log('nova redação recebida')
-    try{        
+    try{         
         let queryCorrecao = `SELECT * FROM tb_correcao WHERE id_redacao = '${req.body.id}'`
         connection.query(queryCorrecao, (err, result) => {
             console.log(err)
@@ -642,6 +642,44 @@ app.post('/deletaCodigo', function (req, res) {
     }
 })
 
+//Função que deleta uma Redacao 
+app.post('/deletaRedacao', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{
+        let queryCodigo = `DELETE FROM tb_redacao WHERE id = '${req.body.id}'`
+        connection.query(queryCodigo,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':'ok'})
+            }
+        })        
+    }catch(err){
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+
+//Função que pega uma correcao de uma das redacoes
+app.post('/getCorrecao', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{
+        let queryTema = `select correcao.data, correcao.observacao, redacao.id_tema, tema.tema FROM tb_correcao correcao INNER JOIN tb_redacao redacao ON (redacao.id = correcao.id_redacao) INNER JOIN tb_tema tema ON (tema.id = redacao.id_tema) where redacao.id = '${req.body.id}'`
+        console.log(queryTema)
+        connection.query(queryTema,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':data})
+            }
+        })        
+    }catch(err){
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
 //Função que recebe os dados do Admin
 app.post('/salvaAdmin', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
