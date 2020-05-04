@@ -761,7 +761,7 @@ app.post('/get_tema', function (req, res) {
         let currentDay = new Date().getDate()
         let currentMonth = new Date().getMonth() + 1
         let currentYear = new Date().getFullYear()
-        let queryTema = `SELECT * FROM tb_tema WHERE dias like '%${currentDay}%' AND mes = '${currentMonth}' AND ano = '${currentYear}'`
+        let queryTema = `SELECT * FROM tb_tema WHERE dias like '%${currentDay}%' AND mes like '%${currentMonth}' AND ano = '${currentYear}'`
         console.log(queryTema)
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
