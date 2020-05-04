@@ -804,7 +804,7 @@ app.post('/salvaTema', function (req, res) {
     try{
         let dados = req.body
         let mes = acertaMes(req.body.mes)
-        let queryTema =  `INSERT INTO tb_tema (tema, dias, mes, ano, apoio_pdf, apoio_web, apoio_video) VALUES ('${dados.tema}','${dados.dias}','${mes}','${dados.ano}','${dados.apoioPdf}','${dados.apoioWeb}','${dados.apoioVideo}');`
+        let queryTema =  `INSERT INTO tb_tema (tema, descricao, dias, mes, ano, apoio_pdf, apoio_web, apoio_video) VALUES ('${dados.tema}','${dados.descricao}','${dados.dias}','${mes}','${dados.ano}','${dados.apoioPdf}','${dados.apoioWeb}','${dados.apoioVideo}');`
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
             if (err){
@@ -826,7 +826,7 @@ app.post('/editaTema', function (req, res) {
     try{
         let dados = req.body
         let mes = acertaMes(req.body.mes)
-        let queryTema =  `UPDATE tb_tema SET tema = '${dados.tema}', dias='${dados.dias}', mes='${mes}', ano='${dados.ano}', apoio_pdf='${dados.apoioPdf}', apoio_web='${dados.apoioWeb}', apoio_video='${dados.apoioVideo}' WHERE id = '${req.body.id}';`
+        let queryTema =  `UPDATE tb_tema SET tema = '${dados.tema}',descricao = '${dados.descricao}', dias='${dados.dias}', mes='${mes}', ano='${dados.ano}', apoio_pdf='${dados.apoioPdf}', apoio_web='${dados.apoioWeb}', apoio_video='${dados.apoioVideo}' WHERE id = '${req.body.id}';`
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
             if (err){
