@@ -227,7 +227,7 @@ app.post('/getCodigo', function (req, res) {
                         quantidade:result[i]['quantidade'],
                         parceiro:result[i]['parceiro'],
                         caminhoImg:base64_encode(result[i]['caminho_logo']),
-                        caminh_logo:result[i]['caminho_logo'],
+                        caminho_logo:result[i]['caminho_logo'],
                         nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
                     })
                 }
@@ -245,6 +245,7 @@ app.post('/alterarCodigo', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{        
         let nomeArquivo = req.body.nomeImg
+        console.log('nome: ' + nomeArquivo)
         const caminho = `/home/apiNode/argumente_api/fotos_parceiro/${nomeArquivo}`
         let queryCorrecao = `UPDATE tb_codigo SET codigo = '${req.body.codigo}', quantidade = '${req.body.quantidade}', parceiro = '${req.body.parceiro}' WHERE id = '${req.body.id}'`
         fs.writeFile(caminho, req.body.imgPhoto, {encoding: 'base64'}, function(err) {
