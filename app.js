@@ -219,17 +219,22 @@ app.post('/getCodigo', function (req, res) {
                 console.log(err)
                 res.send({'status':'erro','desc':err})
             }else{
-                for(let i = 0; i < result.length;i++){
-                    nomeArquivoQuebrado = result[i]['caminho_logo'].split('/')
-                    jsonRetorno.push({
-                        id:result[i]['id'],
-                        codigo:result[i]['codigo'],
-                        quantidade:result[i]['quantidade'],
-                        parceiro:result[i]['parceiro'],
-                        caminhoImg:base64_encode(result[i]['caminho_logo']),
-                        caminho_logo:result[i]['caminho_logo'],
-                        nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
-                    })
+                try{
+                    for(let i = 0; i < result.length;i++){
+                        nomeArquivoQuebrado = result[i]['caminho_logo'].split('/')
+                        jsonRetorno.push({
+                            id:result[i]['id'],
+                            codigo:result[i]['codigo'],
+                            quantidade:result[i]['quantidade'],
+                            parceiro:result[i]['parceiro'],
+                            caminhoImg:base64_encode(result[i]['caminho_logo']),
+                            caminho_logo:result[i]['caminho_logo'],
+                            nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
+                        })
+                    }                
+                }catch(err){
+                    console.log(err)
+                    res.send({'status':'erro','desc':'erro'})
                 }
                 console.log(nomeArquivoQuebrado[nomeArquivoQuebrado.length-1])                
                 res.send({'status':'ok','desc':jsonRetorno})
