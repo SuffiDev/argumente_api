@@ -213,13 +213,25 @@ app.post('/getCodigo', function (req, res) {
     try{        
         let queryCorrecao = `SELECT * FROM tb_codigo WHERE id = '${req.body.id}'`
         connection.query(queryCorrecao, (err, result) => {
+            let jsonRetorno = []
             console.log(err)
             if(err){
                 console.log(err)
                 res.send({'status':'erro','desc':err})
             }else{
-                console.log(result)
-                res.send({'status':'ok','desc':result})
+                for(let i = 0; i < result.length;i++){
+                    nomeArquivoQuebrado = result[i]['caminho_logo'].split('/')
+                    jsonRetorno.push({
+                        id:result[i]['id'],
+                        nome:result[i]['nome'],
+                        idAluno:result[i]['idaluno'],
+                        tema:result[i]['tema'],
+                        caminhoImg:base64_encode(result[i]['caminho_logo']),
+                        nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
+                    })
+                }
+                console.log(nomeArquivoQuebrado[nomeArquivoQuebrado.length-1])                
+                res.send({'status':'ok','desc':jsonRetorno})
             }
         })
     }catch(err){
@@ -264,7 +276,7 @@ app.post('/salvarCodigo', function (req, res) {
         fs.writeFile(caminho, req.body.imgPhoto, {encoding: 'base64'}, function(err) {
             if(!err){
                 console.log('entrou aqui e agora eu vou salvar os dados no banco')
-                let queryCodigo = `INSERT INTO tb_codigo (codigo, parceiro, quantidade) VALUES ('${req.body.codigo}','${req.body.parceiro}','${req.body.quantidade}')`
+                let queryCodigo = `INSERT INTO tb_codigo (codigo, parceiro, quantidade, caminho_logo) VALUES ('${req.body.codigo}','${req.body.parceiro}','${req.body.quantidade}','${caminho}')`
                 connection.query(queryCodigo, (err, result) => {
                     console.log(err)
                     if(err){
