@@ -223,9 +223,9 @@ app.post('/getCodigo', function (req, res) {
                     nomeArquivoQuebrado = result[i]['caminho_logo'].split('/')
                     jsonRetorno.push({
                         id:result[i]['id'],
-                        nome:result[i]['nome'],
-                        idAluno:result[i]['idaluno'],
-                        tema:result[i]['tema'],
+                        codigo:result[i]['codigo'],
+                        quantidade:result[i]['quantidade'],
+                        parceiro:result[i]['parceiro'],
                         caminhoImg:base64_encode(result[i]['caminho_logo']),
                         nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
                     })
