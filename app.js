@@ -254,21 +254,27 @@ app.post('/alterarCodigo', function (req, res) {
         const caminho = `/home/apiNode/argumente_api/fotos_parceiro/${nomeArquivo}`
         let queryCorrecao = `UPDATE tb_codigo SET codigo = '${req.body.codigo}', quantidade = '${req.body.quantidade}', parceiro = '${req.body.parceiro}' WHERE id = '${req.body.id}'`
         fs.writeFile(caminho, req.body.imgPhoto, {encoding: 'base64'}, function(err) {
-            connection.query(queryCorrecao, (err, result) => {
-                try{
-                    console.log(err)
-                    if(err){
+            if(!err){
+                connection.query(queryCorrecao, (err, result) => {
+                    try{
                         console.log(err)
-                        res.send({'status':'erro','desc':err})
-                    }else{
-                        console.log(result)
-                        res.send({'status':'ok','desc':'ok'})
+                        if(err){
+                            console.log(err)
+                            res.send({'status':'erro','desc':err})
+                        }else{
+                            console.log(result)
+                            res.send({'status':'ok','desc':'ok'})
+                        }
+                    }catch(err){
+                        console.log(err)
+                        res.send({'status':'erro','desc':'erro'})
                     }
-                }catch(err){
-                    console.log(err)
-                    res.send({'status':'erro','desc':'erro'})
-                }
-            })
+                })
+            }else{
+
+            console.log(err)
+            res.send({'status':'erro','desc':'erro'})
+            }
     }   )
     }catch(err){
         console.log(err)
