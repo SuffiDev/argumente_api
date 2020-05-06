@@ -245,7 +245,7 @@ app.post('/alterarCodigo', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{        
         let nomeArquivo = req.body.caminhoImg
-        const caminho = `/home/apiNode/argumente_api/fotos_redacao/${nomeArquivo}`
+        const caminho = `/home/apiNode/argumente_api/fotos_parceiro/${nomeArquivo}`
         let queryCorrecao = `UPDATE tb_codigo SET codigo = '${req.body.codigo}', quantidade = '${req.body.quantidade}', parceiro = '${req.body.parceiro}' WHERE id = '${req.body.id}'`
         fs.writeFile(caminho, req.body.imgPhoto, {encoding: 'base64'}, function(err) {
             connection.query(queryCorrecao, (err, result) => {
