@@ -256,16 +256,25 @@ app.post('/alterarCodigo', function (req, res) {
 app.post('/salvarCodigo', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     console.log('nova redação recebida')
+
+    let dataAtual = new Date()
+    let nomeArquivo = req.body.parceiro.toString() + dataAtual.getDay().toString() + dataAtual.getHours().toString() + dataAtual.getMinutes().toString() + dataAtual.getSeconds().toString() + '.png'
+    const caminho = `/home/apiNode/argumente_api/fotos_parceiro/${nomeArquivo}`
     try{        
-        let queryCodigo = `INSERT INTO tb_codigo (codigo, parceiro, quantidade) VALUES ('${req.body.codigo}','${req.body.parceiro}','${req.body.quantidade}')`
-        connection.query(queryCodigo, (err, result) => {
-            console.log(err)
-            if(err){
-                console.log(err)
-                res.send({'status':'erro','desc':err})
-            }else{
-                console.log(result)
-                res.send({'status':'ok','desc':result})
+        fs.writeFile(caminho, req.body.imgPhoto, {encoding: 'base64'}, function(err) {
+            if(!err){
+                console.log('entrou aqui e agora eu vou salvar os dados no banco')
+                let queryCodigo = `INSERT INTO tb_codigo (codigo, parceiro, quantidade) VALUES ('${req.body.codigo}','${req.body.parceiro}','${req.body.quantidade}')`
+                connection.query(queryCodigo, (err, result) => {
+                    console.log(err)
+                    if(err){
+                        console.log(err)
+                        res.send({'status':'erro','desc':err})
+                    }else{
+                        console.log(result)
+                        res.send({'status':'ok','desc':result})
+                    }
+                })
             }
         })
     }catch(err){
