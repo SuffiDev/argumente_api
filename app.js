@@ -227,6 +227,7 @@ app.post('/getCodigo', function (req, res) {
                         quantidade:result[i]['quantidade'],
                         parceiro:result[i]['parceiro'],
                         caminhoImg:base64_encode(result[i]['caminho_logo']),
+                        caminh_logo:result[i]['caminho_logo'],
                         nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
                     })
                 }
@@ -243,22 +244,26 @@ app.post('/getCodigo', function (req, res) {
 app.post('/alterarCodigo', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{        
+        let nomeArquivo = req.body.idTema.toString() + dataAtual.getDay().toString() + dataAtual.getHours().toString() + dataAtual.getMinutes().toString() + dataAtual.getSeconds().toString() + '.png'
+        const caminho = `/home/apiNode/argumente_api/fotos_redacao/${nomeArquivo}`
         let queryCorrecao = `UPDATE tb_codigo SET codigo = '${req.body.codigo}', quantidade = '${req.body.quantidade}', parceiro = '${req.body.parceiro}' WHERE id = '${req.body.id}'`
-        connection.query(queryCorrecao, (err, result) => {
-            try{
-                console.log(err)
-                if(err){
+        fs.writeFile(caminho, req.body.imgPhoto, {encoding: 'base64'}, function(err) {
+            connection.query(queryCorrecao, (err, result) => {
+                try{
                     console.log(err)
-                    res.send({'status':'erro','desc':err})
-                }else{
-                    console.log(result)
-                    res.send({'status':'ok','desc':'ok'})
+                    if(err){
+                        console.log(err)
+                        res.send({'status':'erro','desc':err})
+                    }else{
+                        console.log(result)
+                        res.send({'status':'ok','desc':'ok'})
+                    }
+                }catch(err){
+                    console.log(err)
+                    res.send({'status':'erro','desc':'erro'})
                 }
-            }catch(err){
-                console.log(err)
-                res.send({'status':'erro','desc':'erro'})
-            }
-        })
+            })
+    }   )
     }catch(err){
         console.log(err)
         res.send({'status':'erro','desc':'erro'})
