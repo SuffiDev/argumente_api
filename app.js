@@ -30,23 +30,23 @@ app.post('/register', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         console.log('nova requisicao')
-        let dataRegister = {
-            nome: req.body.nome,
-            sobreNome: req.body.sobreNome,
-            usuario: req.body.usuario,
-            senha: req.body.senha,
-            email: req.body.email,
-            codigoAcesso: req.body.codigoAcesso,
-            escolaridade: req.body.escolaridade,
-            cidade: req.body.cidade,
-            estado: req.body.estado,
-        }
-        console.log("SELECT * FROM tb_codigo WHERE codigo = '"+dataRegister['codigoAcesso']+"'")
-        connection.query("SELECT * FROM tb_codigo WHERE codigo = '"+dataRegister['codigoAcesso']+"'" , (err, result, fields) => {
+        console.log("SELECT * FROM tb_codigo WHERE codigo = '"+req.body.codigoAcesso+"'")
+        connection.query("SELECT * FROM tb_codigo WHERE codigo = '"+req.body.codigoAcesso+"'" , (err, result, fields) => {
             if(result.length > 0 && result[0]['quantidade'] >= 1){
+                let dataRegister = {
+                    nome: req.body.nome,
+                    sobreNome: req.body.sobreNome,
+                    usuario: req.body.usuario,
+                    senha: req.body.senha,
+                    email: req.body.email,
+                    codigoAcesso: result[0]['id'],
+                    escolaridade: req.body.escolaridade,
+                    cidade: req.body.cidade,
+                    estado: req.body.estado,
+                }
                let retornoInsert = insereAlunos(dataRegister)
                if(retornoInsert['status'] == 'ok'){
-                    retornoInsert = alteraCodigo(dataRegister['codigoAcesso'])
+                    retornoInsert = alteraCodigo(req.body.codigoAcesso)
                     if(retornoInsert['status'] == 'ok'){
                         console.log({'status':'ok','desc':'ok'})
                         res.send({'status':'ok','desc':'ok'})
