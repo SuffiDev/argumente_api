@@ -76,14 +76,27 @@ app.post('/login', function (req, res) {
             usuario: req.body.usuario,
             senha: req.body.senha,
         }
-        let queryCodigo = "SELECT * FROM tb_aluno WHERE usuario = '"+dataRegister['usuario']+"' AND senha = '"+dataRegister['senha']+"'"
+        let queryCodigo = "SELECT * FROM tb_aluno INNER JOIN tb_codigo ON (tb_codigo.id = tb_aluno.codigo_acesso) WHERE usuario = '"+dataRegister['usuario']+"' AND senha = '"+dataRegister['senha']+"'"
         connection.query(queryCodigo,(err, retornoInsert) => {
             console.log(JSON.stringify(retornoInsert))
             if (err){
                 console.log(err)
                 res.send( {'status':'erro','desc':err} )
             }else{
-                res.send({'status':'ok','desc':retornoInsert})
+                res.send({'status':'ok','desc':{
+                   nome:retornoInsert[0]['nome'],
+                   sobrenome:retornoInsert[0]['sobrenome'],
+                   usuario:retornoInsert[0]['usuario'],
+                   senha:retornoInsert[0]['senha'],
+                   email:retornoInsert[0]['email'],
+                   codigo_acesso:retornoInsert[0]['codigo_acesso'],
+                   idade:retornoInsert[0]['idade'],
+                   escolaridade:retornoInsert[0]['escolaridade'],
+                   cidade:retornoInsert[0]['cidade'],
+                   estado:retornoInsert[0]['estado'],
+                   caminho_logo:retornoInsert[0]['caminho_logo'],
+                   caminhoImg:base64_encode(retornoInsert[0]['caminho_logo']),
+                }})
             }
         })        
     }catch(err){
