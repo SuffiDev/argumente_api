@@ -76,7 +76,7 @@ app.post('/login', function (req, res) {
             usuario: req.body.usuario,
             senha: req.body.senha,
         }
-        let queryCodigo = "SELECT * FROM tb_aluno INNER JOIN tb_codigo ON (tb_codigo.id = tb_aluno.codigo_acesso) WHERE usuario = '"+dataRegister['usuario']+"' AND senha = '"+dataRegister['senha']+"'"
+        let queryCodigo = "SELECT aluno.nome,aluno.id, aluno.sobrenome, aluno.usuario, aluno.senha, aluno.email, aluno.codigo_acesso, aluno.idade, aluno.escolaridade, aluno.cidade, aluno.estado, codigo.caminho_logo FROM tb_aluno aluno INNER JOIN tb_codigo codigo ON (codigo.id = aluno.codigo_acesso) WHERE usuario = '"+dataRegister['usuario']+"' AND senha = '"+dataRegister['senha']+"'"
         connection.query(queryCodigo,(err, retornoInsert) => {
             console.log(JSON.stringify(retornoInsert))
             if (err){
@@ -84,6 +84,7 @@ app.post('/login', function (req, res) {
                 res.send( {'status':'erro','desc':err} )
             }else{
                 res.send({'status':'ok','desc':{
+                   id:retornoInsert[0]['id'],
                    nome:retornoInsert[0]['nome'],
                    sobrenome:retornoInsert[0]['sobrenome'],
                    usuario:retornoInsert[0]['usuario'],
