@@ -715,7 +715,7 @@ app.post('/deletaRedacao', function (req, res) {
 app.post('/getCorrecao', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
-        let queryTema = `select DATE_FORMAT(correcao.data, '%d/%m/%Y') as data, correcao.observacao, redacao.id_tema, tema.tema FROM tb_correcao correcao INNER JOIN tb_redacao redacao ON (redacao.id = correcao.id_redacao) INNER JOIN tb_tema tema ON (tema.id = redacao.id_tema) where redacao.id = '${req.body.id}'`
+        let queryTema = `select DATE_FORMAT(correcao.data, '%d/%m/%Y') as data, correcao.observacao, redacao.caminho_imagem, redacao.id_tema, tema.tema FROM tb_correcao correcao INNER JOIN tb_redacao redacao ON (redacao.id = correcao.id_redacao) INNER JOIN tb_tema tema ON (tema.id = redacao.id_tema) where redacao.id = '${req.body.id}'`
         console.log(queryTema)
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
@@ -723,7 +723,13 @@ app.post('/getCorrecao', function (req, res) {
                 console.log(err)
                 res.send( {'status':'erro','desc':err} )
             }else{
-                res.send({'status':'ok','desc':data})
+                res.send({'status':'ok','desc':{                    
+                   observacao:base64_encode(data[0]['observacao']),
+                   caminho_imagem:base64_encode(data[0]['caminho_imagem']),
+                   id_tema:base64_encode(data[0]['id_tema']),
+                   tema:base64_encode(data[0]['tema']),
+                   data:base64_encode(data[0]['data']),
+                }})
             }
         })        
     }catch(err){
