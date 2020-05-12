@@ -393,7 +393,7 @@ app.post('/get_redacao', function (req, res) {
         }else{
             tipo = 0
         }
-        let queryRedacao = `select tema.tema, redacao.id as idRedacao, tema.id as idtema from tb_redacao redacao INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE redacao.finalizado = '${tipo}' and redacao.id_aluno = '${req.body.idAluno}'`
+        let queryRedacao = `select DATE_FORMAT(redacao.data, '%d/%m/%Y') as data, tema.tema, redacao.id as idRedacao, tema.id as idtema from tb_redacao redacao INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE redacao.finalizado = '${tipo}' and redacao.id_aluno = '${req.body.idAluno}'`
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
             if(err){
