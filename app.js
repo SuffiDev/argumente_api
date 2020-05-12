@@ -724,11 +724,11 @@ app.post('/getCorrecao', function (req, res) {
                 res.send( {'status':'erro','desc':err} )
             }else{
                 res.send({'status':'ok','desc':{                    
-                   observacao:base64_encode(data[0]['observacao']),
-                   caminho_imagem:base64_encode(data[0]['caminho_imagem']),
-                   id_tema:base64_encode(data[0]['id_tema']),
-                   tema:base64_encode(data[0]['tema']),
-                   data:base64_encode(data[0]['data']),
+                   observacao:data[0]['observacao'],
+                   caminho_imagem:data[0]['caminho_imagem'],
+                   id_tema:data[0]['id_tema'],
+                   tema:data[0]['tema'],
+                   data:data[0]['data'],
                 }})
             }
         })        
