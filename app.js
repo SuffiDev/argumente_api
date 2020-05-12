@@ -725,7 +725,7 @@ app.post('/getCorrecao', function (req, res) {
             }else{
                 res.send({'status':'ok','desc':{                    
                    observacao:data[0]['observacao'],
-                   caminho_imagem:data[0]['caminho_imagem'],
+                   caminho_imagem:base64_encode(data[0]['caminho_imagem']),
                    id_tema:data[0]['id_tema'],
                    tema:data[0]['tema'],
                    data:data[0]['data'],
