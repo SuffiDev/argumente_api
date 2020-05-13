@@ -160,7 +160,7 @@ app.post('/send_redacao', function (req, res) {
             if(!err){
                 console.log('entrou aqui e agora eu vou salvar os dados no banco')
                 let dateComplete = getDateTime(dataAtual)
-                let queryRedacao = `INSERT INTO tb_redacao (id_aluno, id_tema, data_criacao, finalizado, caminho_imagem) VALUES ('${req.body.idAluno}','${req.body.idTema}','${dateComplete}','0','${caminho}')`
+                let queryRedacao = `INSERT INTO tb_redacao (id_aluno, id_tema, data_criacao, finalizado, caminho_imagem, id_professor) VALUES ('${req.body.idAluno}','${req.body.idTema}','${dateComplete}','0','${caminho}',(select id from tb_professor order by rand() limit 1))`
                 console.log(queryRedacao)
                 connection.query(queryRedacao, (err, result) => {
                     console.log(err)
@@ -509,7 +509,7 @@ app.post('/sendCorrecao', function (req, res) {
                 if(!err){
                     console.log('entrou aqui e agora eu vou salvar os dados no banco')
                     let dateComplete = getDateTime(new Date())
-                    let queryRedacao = `INSERT INTO tb_correcao(id_redacao, observacao, usuario_envio, data) VALUES ('${req.body.idRedacao}','${req.body.observacoes}','${req.body.usuarioEnvio}','${dateComplete}')`
+                    let queryRedacao = `INSERT INTO tb_correcao(id_redacao, nota, observacao, usuario_envio, data) VALUES ('${req.body.idRedacao}','${req.body.nota}','${req.body.observacoes}','${req.body.usuarioEnvio}','${dateComplete}')`
                     connection.query(queryRedacao, (err, result) => {
                         console.log(err)
                         if(err){
@@ -715,7 +715,7 @@ app.post('/deletaRedacao', function (req, res) {
 app.post('/getCorrecao', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
-        let queryTema = `select DATE_FORMAT(correcao.data, '%d/%m/%Y') as data, correcao.observacao, redacao.caminho_imagem, redacao.id_tema, tema.tema FROM tb_correcao correcao INNER JOIN tb_redacao redacao ON (redacao.id = correcao.id_redacao) INNER JOIN tb_tema tema ON (tema.id = redacao.id_tema) where redacao.id = '${req.body.id}'`
+        let queryTema = `select DATE_FORMAT(correcao.data, '%d/%m/%Y') as data, correcao.observacao, redacao.caminho_imagem, correcao.nota, redacao.id_tema, tema.tema FROM tb_correcao correcao INNER JOIN tb_redacao redacao ON (redacao.id = correcao.id_redacao) INNER JOIN tb_tema tema ON (tema.id = redacao.id_tema) where redacao.id = '${req.body.id}'`
         console.log(queryTema)
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
@@ -727,6 +727,7 @@ app.post('/getCorrecao', function (req, res) {
                    observacao:data[0]['observacao'],
                    caminho_imagem:base64_encode(data[0]['caminho_imagem']),
                    id_tema:data[0]['id_tema'],
+                   nota:data[0]['nota'],
                    tema:data[0]['tema'],
                    data:data[0]['data'],
                 }})
