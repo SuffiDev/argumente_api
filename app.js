@@ -550,6 +550,44 @@ app.post('/faleconosco', function (req, res) {
         res.send({'status':'erro','desc':'erro ao inserir usuario'})
     }
 })
+//Função que recebe todos os registros da tabela FaleConosco
+app.post('/getFaleConosco', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{  
+        let queryRedacao = `SELECT fale.tipo, fale.texto, (CASE fale.tipo WHEN 'aluno' THEN aluno.nome ELSE prof.nome END) as nome from tb_faleconosco fale LEFT JOIN tb_aluno aluno ON (aluno.id like fale.id_aluno) LEFT JOIN tb_professor prof ON (prof.id = fale.id_aluno)`
+        connection.query(queryRedacao, (err, result) => {
+            console.log(err)
+            if(err){
+                res.send({'status':'erro','desc':err})
+            }else{
+                console.log(result)
+                res.send({'status':'ok','desc':result})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+//Função que recebe um registro da tabela FaleConosco
+app.post('/detalheFaleConosco', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{  
+        let queryRedacao = `SELECT fale.tipo, fale.texto, (CASE fale.tipo WHEN 'aluno' THEN aluno.nome ELSE prof.nome END) as nome from tb_faleconosco fale LEFT JOIN tb_aluno aluno ON (aluno.id like fale.id_aluno) LEFT JOIN tb_professor prof ON (prof.id = fale.id_aluno) WHERE id = '${req.body.id}'`
+        connection.query(queryRedacao, (err, result) => {
+            console.log(err)
+            if(err){
+                res.send({'status':'erro','desc':err})
+            }else{
+                console.log(result)
+                res.send({'status':'ok','desc':result})
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
 
 //Função que recebe um parametro e retorna os dados do usuario para o pos_login
 app.post('/pos_login', function (req, res) {
@@ -794,7 +832,7 @@ app.post('/salvaPerfil', function (req, res) {
 app.post('/enviaComentario', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
-        let queryComentario = `INSERT INTO tb_faleconosco (id_aluno, texto) VALUES ('${req.body.id}','${req.body.comentario}')`
+        let queryComentario = `INSERT INTO tb_faleconosco (id_aluno, texto, tipo) VALUES ('${req.body.id}','${req.body.comentario}','${req.body.tipo}')`
         console.log(queryComentario)
         connection.query(queryComentario,(err, data) => {
             console.log(JSON.stringify(data))
