@@ -554,7 +554,7 @@ app.post('/faleconosco', function (req, res) {
 app.post('/getFaleConosco', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
-        let queryRedacao = `SELECT fale.tipo, fale.texto, (CASE fale.tipo WHEN 'aluno' THEN aluno.nome ELSE prof.nome END) as nome from tb_faleconosco fale LEFT JOIN tb_aluno aluno ON (aluno.id like fale.id_aluno) LEFT JOIN tb_professor prof ON (prof.id = fale.id_aluno)`
+        let queryRedacao = `SELECT fale.id, fale.tipo, fale.texto, (CASE fale.tipo WHEN 'aluno' THEN aluno.nome ELSE prof.nome END) as nome from tb_faleconosco fale LEFT JOIN tb_aluno aluno ON (aluno.id like fale.id_aluno) LEFT JOIN tb_professor prof ON (prof.id = fale.id_aluno)`
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
             if(err){
