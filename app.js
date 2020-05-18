@@ -2,6 +2,7 @@
 
 //mysql config
 const mysql = require('mysql');
+const currentWeekNumber = require('current-week-number');
 const connection = mysql.createConnection({
     host: '127.0.0.1',
     user: 'root',
@@ -854,10 +855,11 @@ app.post('/enviaComentario', function (req, res) {
 app.post('/get_tema', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
-        let currentDay = new Date().getDate()
-        let currentMonth = new Date().getMonth() + 1
+        let currentWeek = currentWeekNumber()
+        //let currentDay = new Date().getDate()
+        //let currentMonth = new Date().getMonth() + 1
         let currentYear = new Date().getFullYear()
-        let queryTema = `SELECT * FROM tb_tema WHERE dias like '%${currentDay}%' AND mes like '%${currentMonth}' AND ano = '${currentYear}'`
+        let queryTema = `SELECT * FROM tb_tema WHERE ano = '${currentYear}' AND semena = '${currentWeek}' ORDER BY id DESC limit 1`
         console.log(queryTema)
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
