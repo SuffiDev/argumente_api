@@ -901,8 +901,7 @@ app.post('/salvaTema', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
         let dados = req.body
-        let mes = acertaMes(req.body.mes)
-        let queryTema =  `INSERT INTO tb_tema (tema, descricao, dias, mes, ano, apoio_pdf, apoio_web, apoio_video) VALUES ('${dados.tema}','${dados.descricao}','${dados.dias}','${mes}','${dados.ano}','${dados.apoioPdf}','${dados.apoioWeb}','${dados.apoioVideo}');`
+        let queryTema =  `INSERT INTO tb_tema (tema, descricao, semana,ano, apoio_pdf, apoio_web, apoio_video) VALUES ('${dados.tema}','${dados.descricao}','${dados.semana}','${dados.ano}','${dados.apoioPdf}','${dados.apoioWeb}','${dados.apoioVideo}');`
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
             if (err){
