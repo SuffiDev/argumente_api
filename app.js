@@ -186,6 +186,7 @@ app.post('/getCorrecoesRedacao', function (req, res) {
     console.log('nova redação recebida')
     try{         
         let queryCorrecao = `SELECT * FROM tb_correcao WHERE id_redacao = '${req.body.id}'`
+
         connection.query(queryCorrecao, (err, result) => {
             console.log(err)
             if(err){
@@ -471,7 +472,7 @@ app.post('/getRedacaoId', function (req, res) {
 app.post('/getRedacoesCorrigidas', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
-        let queryRedacao = `select redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE redacao.id_professor = '${req.body.id}'`
+        let queryRedacao = `select redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE redacao.id_professor = '${req.body.id}' and finalizado = '1'`
         console.log(queryRedacao)
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
