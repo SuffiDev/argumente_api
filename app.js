@@ -396,6 +396,7 @@ app.post('/get_redacao', function (req, res) {
             tipo = 0
         }
         let queryRedacao = `select DATE_FORMAT(redacao.data_criacao, '%d/%m/%Y') as data, tema.tema, redacao.id as idRedacao, tema.id as idtema from tb_redacao redacao INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) WHERE redacao.finalizado = '${tipo}' and redacao.id_aluno = '${req.body.idAluno}'`
+        console.log(queryRedacao)
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
             if(err){
