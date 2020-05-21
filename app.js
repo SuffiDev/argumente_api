@@ -78,6 +78,7 @@ app.post('/login', function (req, res) {
             senha: req.body.senha,
         }
         let queryCodigo = "SELECT aluno.nome,aluno.id as id, aluno.sobrenome, aluno.usuario, aluno.senha, aluno.email, aluno.codigo_acesso, aluno.idade, aluno.escolaridade, aluno.cidade, aluno.estado, codigo.caminho_logo FROM tb_aluno aluno INNER JOIN tb_codigo codigo ON (codigo.id = aluno.codigo_acesso) WHERE usuario = '"+dataRegister['usuario']+"' AND senha = '"+dataRegister['senha']+"'"
+        console.log(queryCodigo)
         connection.query(queryCodigo,(err, retornoInsert) => {
             console.log(JSON.stringify(retornoInsert))
             if (err){
