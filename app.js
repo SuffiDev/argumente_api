@@ -86,21 +86,24 @@ app.post('/login', function (req, res) {
                 res.send( {'status':'erro','desc':err} )
             }else{
                 console.log(retornoInsert[0])
-                res.send({'status':'ok','desc':{
-                   id:retornoInsert[0]['id'],
-                   nome:retornoInsert[0]['nome'],
-                   sobrenome:retornoInsert[0]['sobrenome'],
-                   usuario:retornoInsert[0]['usuario'],
-                   senha:retornoInsert[0]['senha'],
-                   email:retornoInsert[0]['email'],
-                   codigo_acesso:retornoInsert[0]['codigo_acesso'],
-                   idade:retornoInsert[0]['idade'],
-                   escolaridade:retornoInsert[0]['escolaridade'],
-                   cidade:retornoInsert[0]['cidade'],
-                   estado:retornoInsert[0]['estado'],
-                   caminho_logo:retornoInsert[0]['caminho_logo'],
-                   caminhoImg:base64_encode(retornoInsert[0]['caminho_logo']),
-                }})
+                if (retornoInsert[0] == [])
+                    res.send({'status':'ok','desc':{
+                    id:retornoInsert[0]['id'],
+                    nome:retornoInsert[0]['nome'],
+                    sobrenome:retornoInsert[0]['sobrenome'],
+                    usuario:retornoInsert[0]['usuario'],
+                    senha:retornoInsert[0]['senha'],
+                    email:retornoInsert[0]['email'],
+                    codigo_acesso:retornoInsert[0]['codigo_acesso'],
+                    idade:retornoInsert[0]['idade'],
+                    escolaridade:retornoInsert[0]['escolaridade'],
+                    cidade:retornoInsert[0]['cidade'],
+                    estado:retornoInsert[0]['estado'],
+                    caminho_logo:retornoInsert[0]['caminho_logo'],
+                    caminhoImg:base64_encode(retornoInsert[0]['caminho_logo']),
+                    }})
+                else
+                    res.send( {'status':'erro','desc':'erro'} )
             }
         })        
     }catch(err){
