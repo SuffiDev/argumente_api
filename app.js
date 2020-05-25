@@ -883,6 +883,47 @@ app.post('/get_tema', function (req, res) {
         console.log('caiu aqui3' + err)
         res.send({'status':'erro','desc':'erro'})
     }
+})//Função que pega o tema de uma semana que já passou
+app.post('/get_tema_especifico', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{
+        let queryTema = `SELECT * FROM tb_tema WHERE id = '${req.body.idTema}'`
+        console.log(queryTema)
+        connection.query(queryTema,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':data})
+            }
+        })        
+    }catch(err){
+        console.log('caiu aqui3' + err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+//Função que pega todos os temas
+app.post('/get_temas', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{
+        let currentWeek = currentWeekNumber()
+        let currentYear = new Date().getFullYear()
+        let queryTema = `SELECT * FROM tb_tema WHERE ano = '${currentYear}' AND semana < '${currentWeek}' ORDER BY id DESC`
+        console.log(queryTema)
+        connection.query(queryTema,(err, data) => {
+            console.log(JSON.stringify(data))
+            if (err){
+                console.log(err)
+                res.send( {'status':'erro','desc':err} )
+            }else{
+                res.send({'status':'ok','desc':data})
+            }
+        })        
+    }catch(err){
+        console.log('caiu aqui3' + err)
+        res.send({'status':'erro','desc':'erro'})
+    }
 })
 
 
