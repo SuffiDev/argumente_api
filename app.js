@@ -521,8 +521,8 @@ app.post('/sendCorrecao', function (req, res) {
         const form = formidable({ multiples: true })
         form.parse(req, (err, fields, files) => {
             console.log('variavel erro: ' + err)
-            console.log('variavel fields: ' + fields)
-            console.log('variavel files: ' + files)
+            console.log('variavel fields: ' + JSON.stringify(fields))
+            console.log('variavel files: ' + JSON.stringify(files))
         })
         console.log('vou pegar o req.data')
         console.log(req.body)
