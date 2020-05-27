@@ -517,8 +517,8 @@ app.post('/getRedacoesCorrigidas', function (req, res) {
 app.post('/sendCorrecao', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
-        console.log(req.body)
-        res.send(req.body)
+        console.log(req.data)
+        res.send(req.data)
         //console.log(`SELECT caminho_imagem FROM tb_redacao where id ='${req.body.idRedacao}'`)
         //connection.query(`SELECT caminho_imagem FROM tb_redacao where id ='${req.body.idRedacao}'`, (err, result) => {
         //    console.log(req.body.dadosImagem)
