@@ -512,29 +512,31 @@ app.post('/getRedacoesCorrigidas', function (req, res) {
 app.post('/sendCorrecao', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
-        console.log(`SELECT caminho_imagem FROM tb_redacao where id ='${req.body.idRedacao}'`)
-        connection.query(`SELECT caminho_imagem FROM tb_redacao where id ='${req.body.idRedacao}'`, (err, result) => {
-            console.log(req.body.dadosImagem)
-            fs.writeFile(result[0]['caminho_imagem'], req.body.dadosImagem, 'base64', function(err) {
-                if(!err){
-                    console.log('entrou aqui e agora eu vou salvar os dados no banco')
-                    let dateComplete = getDateTime(new Date())
-                    let queryRedacao = `INSERT INTO tb_correcao(id_redacao, nota, observacao, usuario_envio, data) VALUES ('${req.body.idRedacao}','${req.body.nota}','${req.body.observacoes}','${req.body.usuarioEnvio}','${dateComplete}')`
-                    connection.query(queryRedacao, (err, result) => {
-                        console.log(err)
-                        if(err){
-                            res.send({'status':'erro','desc':err})
-                        }else{         
-                            connection.query(`UPDATE tb_redacao SET id_professor = '${req.body.idProfessor}', finalizado = '1' WHERE id = '${req.body.idRedacao}'`, (err, result) => {
-                                res.send({'status':'ok','desc':'ok'})
-                            })
-                        }
-                    })
-                }else{
-                    res.send({'status':'erro','desc':err})
-                }
-            })
-        })
+        console.log(req.body)
+        res.send(req.body)
+        //console.log(`SELECT caminho_imagem FROM tb_redacao where id ='${req.body.idRedacao}'`)
+        //connection.query(`SELECT caminho_imagem FROM tb_redacao where id ='${req.body.idRedacao}'`, (err, result) => {
+        //    console.log(req.body.dadosImagem)
+        //    fs.writeFile(result[0]['caminho_imagem'], req.body.dadosImagem, 'base64', function(err) {
+        //        if(!err){
+        //            console.log('entrou aqui e agora eu vou salvar os dados no banco')
+        //            let dateComplete = getDateTime(new Date())
+        //            let queryRedacao = `INSERT INTO tb_correcao(id_redacao, nota, observacao, usuario_envio, data) VALUES ('${req.body.idRedacao}','${req.body.nota}','${req.body.observacoes}','${req.body.usuarioEnvio}','${dateComplete}')`
+        //            connection.query(queryRedacao, (err, result) => {
+        //                console.log(err)
+        //                if(err){
+        //                    res.send({'status':'erro','desc':err})
+        //                }else{         
+        //                    connection.query(`UPDATE tb_redacao SET id_professor = '${req.body.idProfessor}', finalizado = '1' WHERE id = '${req.body.idRedacao}'`, (err, result) => {
+        //                        res.send({'status':'ok','desc':'ok'})
+        //                    })
+        //                }
+        //            })
+        //        }else{
+        //            res.send({'status':'erro','desc':err})
+        //        }
+        //    })
+        //})
     }catch(err){
         console.log(err)
         res.send({'status':'erro','desc':'erro'})
