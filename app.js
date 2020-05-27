@@ -440,7 +440,7 @@ app.post('/getNovasRedacoes', function (req, res) {
 app.post('/getRedacaoId', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
-        let queryRedacao = `select correcao.nota as nota, redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) INNER JOIN tb_correcao correcao ON (redacao.id = correcao.id_redacao)WHERE redacao.id = '${req.body.id}' limit 1`
+        let queryRedacao = `select correcao.nota as nota, redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) INNER JOIN tb_correcao correcao ON (redacao.id = correcao.id_redacao) WHERE redacao.id = '${req.body.id}' limit 1`
 
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
@@ -467,7 +467,7 @@ app.post('/getRedacaoId', function (req, res) {
                             res.send({'status':'erro','desc':'erro'})
                         }
                     }
-                    console.log(nomeArquivoQuebrado[nomeArquivoQuebrado.length-1])                
+                    //console.log(nomeArquivoQuebrado[nomeArquivoQuebrado.length-1])                
                     res.send({'status':'ok','desc':jsonRetorno})                    
                 }catch(err){
                     console.log(err)
