@@ -3,6 +3,7 @@
 //mysql config
 const mysql = require('mysql');
 const currentWeekNumber = require('current-week-number');
+const formidable = require('formidable')
 const connection = mysql.createConnection({
     host: '127.0.0.1',
     user: 'root',
@@ -517,6 +518,12 @@ app.post('/getRedacoesCorrigidas', function (req, res) {
 app.post('/sendCorrecao', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
+        const form = formidable({ multiples: true })
+        form.parse(req, (err, fields, files) => {
+            console.log('variavel erro: ' + err)
+            console.log('variavel fields: ' + fields)
+            console.log('variavel files: ' + files)
+        })
         console.log('vou pegar o req.data')
         console.log(req.body)
         res.send(req.body)
