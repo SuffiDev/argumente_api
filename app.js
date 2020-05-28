@@ -452,15 +452,7 @@ app.post('/getRedacaoProfessor', function (req, res) {
                     let nomeArquivoQuebrado 
                     for(let i = 0; i < result.length;i++){
                         try{
-                            console.log('entrou')
                             nomeArquivoQuebrado = result[i]['caminhoImagem'].split('/')
-                            console.log({id:result[i]['id'],
-                                nome:result[i]['nome'],
-                                idAluno:result[i]['idaluno'],
-                                tema:result[i]['tema'],
-                                caminhoImg:base64_encode(result[i]['caminhoImagem']),
-                                nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
-                            })
                             jsonRetorno.push({
                                 id:result[i]['id'],
                                 nome:result[i]['nome'],
@@ -582,33 +574,37 @@ app.post('/sendCorrecao', function (req, res) {
             console.log('variavel erro: ' + err)
             console.log('variavel fields: ' + JSON.stringify(fields))
             console.log('variavel files: ' + JSON.stringify(files))
+            console.log(`SELECT caminho_imagem FROM tb_redacao where id ='${fields.idRedacao}'`)
+            connection.query(`SELECT caminho_imagem FROM tb_redacao where id ='${fields.idRedacao}'`, (err, result) => {
+                fs.writeFile(result[0]['caminho_imagem'], fields.dadosImagem, 'base64', function(err) {
+                    if(!err){
+                        const caminhoAudio = `/home/apiNode/argumente_api/audios_redacao/${files.file['path'].split('/')[1]}.aac`
+                        fs.rename(files.file['path'], caminhoAudio , function (err) {
+                            if(!err){
+                                console.log('entrou aqui e agora eu vou salvar os dados no banco')
+                                let dateComplete = getDateTime(new Date())
+                                let queryRedacao = `INSERT INTO tb_correcao(id_redacao, nota, observacao, usuario_envio, data, audiodica) VALUES ('${fields.idRedacao}','${fields.nota}','${fields.observacoes}','${fields.usuarioEnvio}','${dateComplete}','${caminhoAudio}')`
+                                console.log(queryRedacao)
+                                connection.query(queryRedacao, (err, result) => {
+                                    console.log(err)
+                                    if(err){
+                                        res.send({'status':'erro','desc':err})
+                                    }else{         
+                                        connection.query(`UPDATE tb_redacao SET id_professor = '${req.body.idProfessor}', finalizado = '1' WHERE id = '${req.body.idRedacao}'`, (err, result) => {
+                                            res.send({'status':'ok','desc':'ok'})
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                        
+                    }else{
+                        res.send({'status':'erro','desc':err})
+                    }
+                })
+            })
         })
-        console.log('vou pegar o req.data')
-        console.log(req.body)
-        res.send(req.body)
-        //console.log(`SELECT caminho_imagem FROM tb_redacao where id ='${req.body.idRedacao}'`)
-        //connection.query(`SELECT caminho_imagem FROM tb_redacao where id ='${req.body.idRedacao}'`, (err, result) => {
-        //    console.log(req.body.dadosImagem)
-        //    fs.writeFile(result[0]['caminho_imagem'], req.body.dadosImagem, 'base64', function(err) {
-        //        if(!err){
-        //            console.log('entrou aqui e agora eu vou salvar os dados no banco')
-        //            let dateComplete = getDateTime(new Date())
-        //            let queryRedacao = `INSERT INTO tb_correcao(id_redacao, nota, observacao, usuario_envio, data) VALUES ('${req.body.idRedacao}','${req.body.nota}','${req.body.observacoes}','${req.body.usuarioEnvio}','${dateComplete}')`
-        //            connection.query(queryRedacao, (err, result) => {
-        //                console.log(err)
-        //                if(err){
-        //                    res.send({'status':'erro','desc':err})
-        //                }else{         
-        //                    connection.query(`UPDATE tb_redacao SET id_professor = '${req.body.idProfessor}', finalizado = '1' WHERE id = '${req.body.idRedacao}'`, (err, result) => {
-        //                        res.send({'status':'ok','desc':'ok'})
-        //                    })
-        //                }
-        //            })
-        //        }else{
-        //            res.send({'status':'erro','desc':err})
-        //        }
-        //    })
-        //})
+        
     }catch(err){
         console.log(err)
         res.send({'status':'erro','desc':'erro'})
