@@ -441,7 +441,7 @@ app.post('/getNovasRedacoes', function (req, res) {
 app.post('/getRedacaoProfessor', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
-        let queryRedacao = `SELECT * FROM tb_redacao INNER JOIN tb_tema ON (tb_tema.id = redacao.id_tema) WHERE id='${req.body.id}'`
+        let queryRedacao = `SELECT redacao.id as idRedacao, aluno.nome, redacao.id_aluno, tema.tema  FROM tb_redacao redacao INNER JOIN tb_tema tema ON (tb_tema.id = redacao.id_tema) INNER JOIN tb_aluno aluno ON (aluno.id = redacao.id_aluno) WHERE id='${req.body.id}'`
         console.log(queryRedacao)
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
@@ -458,7 +458,6 @@ app.post('/getRedacaoProfessor', function (req, res) {
                             console.log({id:result[i]['id'],
                                 nome:result[i]['nome'],
                                 idAluno:result[i]['idaluno'],
-                                nota:result[i]['nota'],
                                 tema:result[i]['tema'],
                                 caminhoImg:base64_encode(result[i]['caminhoImagem']),
                                 nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
@@ -467,7 +466,6 @@ app.post('/getRedacaoProfessor', function (req, res) {
                                 id:result[i]['id'],
                                 nome:result[i]['nome'],
                                 idAluno:result[i]['idaluno'],
-                                nota:result[i]['nota'],
                                 tema:result[i]['tema'],
                                 caminhoImg:base64_encode(result[i]['caminhoImagem']),
                                 nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
