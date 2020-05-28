@@ -439,9 +439,8 @@ app.post('/getNovasRedacoes', function (req, res) {
 })
 //Função que recebe dados de uma redação ainda não corrigida
 app.post('/getRedacaoProfessor', function (req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
-        let queryRedacao = `SELECT redacao.id as idRedacao, tema.id as idTema, aluno.nome, redacao.id_aluno, tema.tema  FROM tb_redacao redacao INNER JOIN tb_tema tema ON (tema.id = redacao.id_tema) INNER JOIN tb_aluno aluno ON (aluno.id = redacao.id_aluno) WHERE redacao.id='${req.body.id}'`
+        let queryRedacao = `SELECT redacao.id as idRedacao, tema.id as idTema,redacao.caminho_imagem as caminhoImagem, aluno.nome, redacao.id_aluno, tema.tema  FROM tb_redacao redacao INNER JOIN tb_tema tema ON (tema.id = redacao.id_tema) INNER JOIN tb_aluno aluno ON (aluno.id = redacao.id_aluno) WHERE redacao.id='${req.body.id}'`
         console.log(queryRedacao)
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
