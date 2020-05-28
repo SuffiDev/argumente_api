@@ -454,6 +454,14 @@ app.post('/getRedacaoId', function (req, res) {
                     for(let i = 0; i < result.length;i++){
                         nomeArquivoQuebrado = result[i]['caminhoImagem'].split('/')
                         try{
+                            console.log({id:result[i]['id'],
+                                nome:result[i]['nome'],
+                                idAluno:result[i]['idaluno'],
+                                nota:result[i]['nota'],
+                                tema:result[i]['tema'],
+                                caminhoImg:base64_encode(result[i]['caminhoImagem']),
+                                nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
+                            })
                             jsonRetorno.push({
                                 id:result[i]['id'],
                                 nome:result[i]['nome'],
