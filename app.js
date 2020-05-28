@@ -438,6 +438,59 @@ app.post('/getNovasRedacoes', function (req, res) {
     }
 })
 //Função que recebe dados de uma redação ainda não corrigida
+app.post('/getRedacaoProfessor', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    try{  
+        let queryRedacao = `SELECT * FROM f_redacao INNER JOIN tb_tema ON (tb_tema.id = redacao.id_tema) WHERE id='${req.body.id}'`
+        console.log(queryRedacao)
+        connection.query(queryRedacao, (err, result) => {
+            console.log(err)
+            if(err){
+                res.send({'status':'erro','desc':err})
+            }else{
+                try{
+                    let jsonRetorno = []
+                    let nomeArquivoQuebrado 
+                    for(let i = 0; i < result.length;i++){
+                        try{
+                            console.log('entrou')
+                            nomeArquivoQuebrado = result[i]['caminhoImagem'].split('/')
+                            console.log({id:result[i]['id'],
+                                nome:result[i]['nome'],
+                                idAluno:result[i]['idaluno'],
+                                nota:result[i]['nota'],
+                                tema:result[i]['tema'],
+                                caminhoImg:base64_encode(result[i]['caminhoImagem']),
+                                nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
+                            })
+                            jsonRetorno.push({
+                                id:result[i]['id'],
+                                nome:result[i]['nome'],
+                                idAluno:result[i]['idaluno'],
+                                nota:result[i]['nota'],
+                                tema:result[i]['tema'],
+                                caminhoImg:base64_encode(result[i]['caminhoImagem']),
+                                nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
+                            })
+                        }catch(err){
+                            console.log(err)
+                            res.send({'status':'erro','desc':'erro'})
+                        }
+                    }
+                    //console.log(nomeArquivoQuebrado[nomeArquivoQuebrado.length-1])                
+                    res.send({'status':'ok','desc':jsonRetorno})                    
+                }catch(err){
+                    console.log(err)
+                    res.send({'status':'erro','desc':'erro'})
+                }
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+//Função que recebe dados de uma redação ainda não corrigida
 app.post('/getRedacaoId', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
