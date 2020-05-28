@@ -453,6 +453,7 @@ app.post('/getRedacaoId', function (req, res) {
                     let nomeArquivoQuebrado 
                     for(let i = 0; i < result.length;i++){
                         try{
+                            console.log('entrou')
                             nomeArquivoQuebrado = result[i]['caminhoImagem'].split('/')
                             console.log({id:result[i]['id'],
                                 nome:result[i]['nome'],
