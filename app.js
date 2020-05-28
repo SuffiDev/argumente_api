@@ -454,7 +454,7 @@ app.post('/getRedacaoProfessor', function (req, res) {
                         try{
                             nomeArquivoQuebrado = result[i]['caminhoImagem'].split('/')
                             jsonRetorno.push({
-                                id:result[i]['id'],
+                                id:result[i]['idRedacao'],
                                 nome:result[i]['nome'],
                                 idAluno:result[i]['idaluno'],
                                 tema:result[i]['tema'],
