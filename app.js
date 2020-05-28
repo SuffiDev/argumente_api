@@ -452,8 +452,8 @@ app.post('/getRedacaoId', function (req, res) {
                     let jsonRetorno = []
                     let nomeArquivoQuebrado 
                     for(let i = 0; i < result.length;i++){
-                        nomeArquivoQuebrado = result[i]['caminhoImagem'].split('/')
                         try{
+                            nomeArquivoQuebrado = result[i]['caminhoImagem'].split('/')
                             console.log({id:result[i]['id'],
                                 nome:result[i]['nome'],
                                 idAluno:result[i]['idaluno'],
@@ -1170,8 +1170,13 @@ function getDateTime(now) {
 }
 // função que recebe o camiho de um arquivo, abre e transforma em base64 
 function base64_encode(file) {
-    // le o binario
-    var bitmap = fs.readFileSync(file);
-    // converte para base64 e retorna
-    return new Buffer(bitmap).toString('base64');
+    try{
+        // le o binario
+        var bitmap = fs.readFileSync(file);
+        // converte para base64 e retorna
+        return new Buffer(bitmap).toString('base64');
+
+    }catch(err){
+        return ''
+    }
 }
