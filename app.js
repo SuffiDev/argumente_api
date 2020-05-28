@@ -441,7 +441,7 @@ app.post('/getNovasRedacoes', function (req, res) {
 app.post('/getRedacaoProfessor', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
-        let queryRedacao = `SELECT * FROM f_redacao INNER JOIN tb_tema ON (tb_tema.id = redacao.id_tema) WHERE id='${req.body.id}'`
+        let queryRedacao = `SELECT * FROM tb_redacao INNER JOIN tb_tema ON (tb_tema.id = redacao.id_tema) WHERE id='${req.body.id}'`
         console.log(queryRedacao)
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
