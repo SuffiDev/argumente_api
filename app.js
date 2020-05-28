@@ -572,7 +572,7 @@ app.post('/sendCorrecao', function (req, res) {
         const form = formidable({ multiples: true })
         form.parse(req, (err, fields, files) => {
             console.log('variavel erro: ' + err)
-            console.log('variavel fields: ' + JSON.stringify(fields['idRedacao']))
+            console.log('variavel fields: ' + JSON.stringify(fields[0]))
             console.log('variavel files: ' + JSON.stringify(files.file))
             console.log(`SELECT caminho_imagem FROM tb_redacao where id ='${fields.idRedacao}'`)
             connection.query(`SELECT caminho_imagem FROM tb_redacao where id ='${fields.idRedacao}'`, (err, result) => {
