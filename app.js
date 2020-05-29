@@ -557,8 +557,8 @@ app.post('/getRedacoesCorrigidas', function (req, res) {
 app.get('/getAudio', function (req, res) {
     res.setHeader('Content-type', 'audio/aac');
     try{  
-        console.log(req.body)
-        let queryRedacao = `SELECT audiodica FROM tb_correcao WHERE id = '${req.body.id}'`
+        console.log(req.query)
+        let queryRedacao = `SELECT audiodica FROM tb_correcao WHERE id = '${req.query.id}'`
         console.log(queryRedacao)
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
