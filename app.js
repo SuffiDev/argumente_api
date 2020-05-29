@@ -555,7 +555,7 @@ app.post('/getRedacoesCorrigidas', function (req, res) {
 })
 //Função que retorna o audio do audiodicas
 app.get('/getAudio', function (req, res) {
-    res.setHeader('Content-type', 'audio/aac');
+    //res.setHeader('Content-type', 'audio/aac');
     try{  
         console.log(req.params)
         let queryRedacao = `SELECT audiodica FROM tb_correcao WHERE id = '${req.params.id}'`
