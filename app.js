@@ -67,8 +67,6 @@ app.post('/register', function (req, res) {
         res.send({'status':'erro','desc':'erro ao inserir usuario'})
     }
 })
-      
-
 //Função que recebe os parametros do login e retorna os dados do usuario
 app.post('/login', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -112,7 +110,6 @@ app.post('/login', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 app.get('/teste', (req, res) => {
     console.log('teste')
     res.send('teste');
@@ -374,7 +371,7 @@ app.post('/cadastrarProfessor', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     console.log('nova redação recebida')
     try{        
-        let queryCodigo = `INSERT INTO tb_professor (nome, sobreNome, escola, cidade, estado, usuario, senha) VALUES ('${req.body.nome}','${req.body.sobreNome}','${req.body.escola}','${req.body.cidade}','${req.body.estado}','${req.body.usuario}','${req.body.senha}')`
+        let queryCodigo = `INSERT INTO tb_professor (nome, email, sobreNome, escola, cidade, estado, usuario, senha) VALUES ('${req.body.nome}','${req.body.email}','${req.body.sobreNome}','${req.body.escola}','${req.body.cidade}','${req.body.estado}','${req.body.usuario}','${req.body.senha}')`
         connection.query(queryCodigo, (err, result) => {
             console.log(err)
             if(err){
@@ -390,7 +387,6 @@ app.post('/cadastrarProfessor', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que recebe a redação do aluno, salva e a sorteia para um dos proffesores
 app.post('/get_redacao', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -416,7 +412,6 @@ app.post('/get_redacao', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que recebe todas as redações ainda sem um professor linkado
 app.post('/getNovasRedacoes', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -571,16 +566,12 @@ app.post('/sendCorrecao', function (req, res) {
     try{  
         const form = formidable({ multiples: true })
         form.parse(req, (err, fields, files) => {
-            console.log('variavel erro: ' + err)
-            console.log('variavel fields: ' + JSON.stringify(fields))
-            console.log('variavel req.body: ' + JSON.stringify(req.body))
-            console.log('variavel files: ' + JSON.stringify(files.file))
             console.log(`SELECT caminho_imagem FROM tb_redacao where id ='${fields['idRedacao']}'`)
             connection.query(`SELECT caminho_imagem FROM tb_redacao where id ='${fields['idRedacao']}'`, (err, result) => {
                 try{
                     fs.writeFile(result[0]['caminho_imagem'], fields['dadosImagem'], 'base64', function(err) {
                         if(!err){
-                            const caminhoAudio = `/home/apiNode/argumente_api/audios_redacao/${files.file['path'].split('/')[1]}.aac`
+                            const caminhoAudio = `/home/apiNode/argumente_api/audios_redacao/${files.file['path'].split('/')[2]}.aac`
                             fs.rename(files.file['path'], caminhoAudio , function (err) {
                                 if(!err){
                                     console.log('entrou aqui e agora eu vou salvar os dados no banco')
@@ -660,7 +651,7 @@ app.post('/getFaleConosco', function (req, res) {
 app.post('/detalheFaleConosco', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
-        let queryRedacao = `SELECT fale.tipo, fale.texto, (CASE fale.tipo WHEN 'aluno' THEN aluno.nome ELSE prof.nome END) as nome from tb_faleconosco fale LEFT JOIN tb_aluno aluno ON (aluno.id like fale.id_aluno) LEFT JOIN tb_professor prof ON (prof.id = fale.id_aluno) WHERE fale.id = '${req.body.id}'`
+        let queryRedacao = `SELECT fale.tipo,(CASE WHEN fale.tipo = 'aluno' THEN aluno.email ELSE prof.email END) as email, fale.texto, (CASE fale.tipo WHEN 'aluno' THEN aluno.nome ELSE prof.nome END) as nome from tb_faleconosco fale LEFT JOIN tb_aluno aluno ON (aluno.id like fale.id_aluno) LEFT JOIN tb_professor prof ON (prof.id = fale.id_aluno) WHERE fale.id = '${req.body.id}'`
         console.log(queryRedacao)
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
@@ -676,7 +667,6 @@ app.post('/detalheFaleConosco', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que recebe um parametro e retorna os dados do usuario para o pos_login
 app.post('/pos_login', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -699,7 +689,6 @@ app.post('/pos_login', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que recebe um parametro e retorna os dados do usuario para o perfil
 app.post('/get_aluno', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -716,7 +705,6 @@ app.post('/get_aluno', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que recebe um parametro e retorna os dados do usuario para o perfil do Professor
 app.post('/getProfessor', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -733,7 +721,6 @@ app.post('/getProfessor', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que recebe os dados do professor e os salva
 app.post('/salvaProfessor', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -760,7 +747,6 @@ app.post('/salvaProfessor', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que deleta um professor
 app.post('/deletaProfessor', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -779,7 +765,6 @@ app.post('/deletaProfessor', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que deleta um tema
 app.post('/deletaTema', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -798,7 +783,6 @@ app.post('/deletaTema', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que deleta um Codigo
 app.post('/deletaCodigo', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -817,7 +801,6 @@ app.post('/deletaCodigo', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que deleta uma Redacao 
 app.post('/deletaRedacao', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -836,12 +819,11 @@ app.post('/deletaRedacao', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que pega uma correcao de uma das redacoes
 app.post('/getCorrecao', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
-        let queryTema = `select DATE_FORMAT(correcao.data, '%d/%m/%Y') as data, correcao.observacao, redacao.caminho_imagem, correcao.nota, redacao.id_tema, tema.tema FROM tb_correcao correcao INNER JOIN tb_redacao redacao ON (redacao.id = correcao.id_redacao) INNER JOIN tb_tema tema ON (tema.id = redacao.id_tema) where redacao.id = '${req.body.id}'`
+        let queryTema = `select DATE_FORMAT(correcao.data, '%d/%m/%Y') as data, correcao.id as idCorrecao, correcao.observacao, redacao.caminho_imagem, correcao.nota, redacao.id_tema, tema.tema FROM tb_correcao correcao INNER JOIN tb_redacao redacao ON (redacao.id = correcao.id_redacao) INNER JOIN tb_tema tema ON (tema.id = redacao.id_tema) where redacao.id = '${req.body.id}'`
         console.log(queryTema)
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
@@ -854,6 +836,7 @@ app.post('/getCorrecao', function (req, res) {
                    caminho_imagem:base64_encode(data[0]['caminho_imagem']),
                    id_tema:data[0]['id_tema'],
                    nota:data[0]['nota'],
+                   idCorrecao:data[0]['idCorrecao'],
                    tema:data[0]['tema'],
                    data:data[0]['data'],
                 }})
@@ -886,7 +869,6 @@ app.post('/salvaAdmin', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que recebe os dados do perfil como parametro e os salva
 app.post('/salvaPerfil', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -915,7 +897,6 @@ app.post('/salvaPerfil', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que envia um comentario
 app.post('/enviaComentario', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -936,7 +917,6 @@ app.post('/enviaComentario', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-
 //Função que pega o tema da semana
 app.post('/get_tema', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -960,7 +940,8 @@ app.post('/get_tema', function (req, res) {
         console.log('caiu aqui3' + err)
         res.send({'status':'erro','desc':'erro'})
     }
-})//Função que pega o tema de uma semana que já passou
+})
+//Função que pega o tema de uma semana que já passou
 app.post('/get_tema_especifico', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
