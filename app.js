@@ -478,7 +478,7 @@ app.post('/getRedacaoProfessor', function (req, res) {
 app.post('/getRedacaoId', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
-        let queryRedacao = `select correcao.nota as nota, redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) INNER JOIN tb_correcao correcao ON (redacao.id = correcao.id_redacao) WHERE redacao.id = '${req.body.id}' limit 1`
+        let queryRedacao = `select correcao.nota as nota,correcao.id as idCorrecao, redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) INNER JOIN tb_correcao correcao ON (redacao.id = correcao.id_redacao) WHERE redacao.id = '${req.body.id}' limit 1`
         console.log(queryRedacao)
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
@@ -492,18 +492,11 @@ app.post('/getRedacaoId', function (req, res) {
                         try{
                             console.log('entrou')
                             nomeArquivoQuebrado = result[i]['caminhoImagem'].split('/')
-                            console.log({id:result[i]['id'],
-                                nome:result[i]['nome'],
-                                idAluno:result[i]['idaluno'],
-                                nota:result[i]['nota'],
-                                tema:result[i]['tema'],
-                                caminhoImg:base64_encode(result[i]['caminhoImagem']),
-                                nomeArquivo:nomeArquivoQuebrado[nomeArquivoQuebrado.length-1]
-                            })
                             jsonRetorno.push({
                                 id:result[i]['id'],
                                 nome:result[i]['nome'],
                                 idAluno:result[i]['idaluno'],
+                                idCorrecao:result[i]['idCorrecao'],
                                 nota:result[i]['nota'],
                                 tema:result[i]['tema'],
                                 caminhoImg:base64_encode(result[i]['caminhoImagem']),
@@ -549,6 +542,30 @@ app.post('/getRedacoesCorrigidas', function (req, res) {
                         })
                     }            
                     res.send({'status':'ok','desc':jsonRetorno})                    
+                }catch(err){
+                    console.log(err)
+                    res.send({'status':'erro','desc':'erro'})
+                }
+            }
+        })
+    }catch(err){
+        console.log(err)
+        res.send({'status':'erro','desc':'erro'})
+    }
+})
+//Função que retorna o audio do audiodicas
+app.get('/getAudio', function (req, res) {
+    res.setHeader('Content-type', 'audio/aac');
+    try{  
+        let queryRedacao = `SELECT audiodica FROM tb_correcao WHERE id = '${req.body.id}'`
+        console.log(queryRedacao)
+        connection.query(queryRedacao, (err, result) => {
+            console.log(err)
+            if(err){
+                res.send({'status':'erro','desc':err})
+            }else{
+                try{
+                    res.download(result[0]['audiodica'])                
                 }catch(err){
                     console.log(err)
                     res.send({'status':'erro','desc':'erro'})
