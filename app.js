@@ -572,12 +572,10 @@ app.get('/getAudio.aac', function (req, res) {
                     res.writeHead(200, {
                         'Content-Type': 'audio/aac',
                     });
-                    fs
                     //res.download(result[0]['audiodica'])  
                     var readStream = fs.createReadStream(filePath);
                     readStream.pipe(res);              
                 }catch(err){
-                    ms
                     console.log(err)
                     res.send({'status':'erro','desc':'erro'})
                 }
