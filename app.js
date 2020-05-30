@@ -554,7 +554,7 @@ app.post('/getRedacoesCorrigidas', function (req, res) {
     }
 })
 //Função que retorna o audio do audiodicas
-app.get('/getAudio', function (req, res) {
+app.get('/getAudio.aac', function (req, res) {
     //res.setHeader('Content-type', 'audio/aac');
     try{  
         console.log(req.params)
@@ -567,8 +567,17 @@ app.get('/getAudio', function (req, res) {
                 res.send({'status':'erro','desc':err})
             }else{
                 try{
-                    res.download(result[0]['audiodica'])                
+                    let filePath = result[0]['audiodica']
+                    let stat = fs.statSync(filePath);
+                    res.writeHead(200, {
+                        'Content-Type': 'audio/aac',
+                    });
+                    fs
+                    //res.download(result[0]['audiodica'])  
+                    var readStream = fs.createReadStream(filePath);
+                    readStream.pipe(res);              
                 }catch(err){
+                    ms
                     console.log(err)
                     res.send({'status':'erro','desc':'erro'})
                 }
