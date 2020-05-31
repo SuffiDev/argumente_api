@@ -351,7 +351,7 @@ app.post('/getProfessores', function (req, res) {
 app.post('/getTemas', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
-        let queryProf = `SELECT * FROM tb_tema`
+        let queryProf = `SELECT * FROM tb_tema ORDER BY ano, ABS(semana)`
         connection.query(queryProf, (err, result) => {
             console.log(err)
             if(err){
@@ -555,7 +555,6 @@ app.post('/getRedacoesCorrigidas', function (req, res) {
 })
 //Função que retorna o audio do audiodicas
 app.get('/getAudio.aac', function (req, res) {
-    //res.setHeader('Content-type', 'audio/aac');
     try{  
         console.log(req.params)
         console.log(req.query)
@@ -572,7 +571,6 @@ app.get('/getAudio.aac', function (req, res) {
                     res.writeHead(200, {
                         'Content-Type': 'audio/aac',
                     });
-                    //res.download(result[0]['audiodica'])  
                     var readStream = fs.createReadStream(filePath);
                     readStream.pipe(res);              
                 }catch(err){
