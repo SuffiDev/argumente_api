@@ -305,7 +305,7 @@ app.post('/salvarCodigo', function (req, res) {
 
     let dataAtual = new Date()
     let nomeArquivo = req.body.parceiro.toString() + dataAtual.getDay().toString() + dataAtual.getHours().toString() + dataAtual.getMinutes().toString() + dataAtual.getSeconds().toString() + '.png'
-    const caminho = `/home/apiNode/argumente_api/fotos_parceiro/${nomeArquivo}`
+    const caminho = `/home/apiNode/argumente_api/fotos_parceiro/${nomeArquivo.replace(' ','')}`
     try{        
         fs.writeFile(caminho, req.body.imgPhoto, {encoding: 'base64'}, function(err) {
             if(!err){
