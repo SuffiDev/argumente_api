@@ -478,7 +478,7 @@ app.post('/getRedacaoProfessor', function (req, res) {
 app.post('/getRedacaoId', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{  
-        let queryRedacao = `select correcao.nota as nota,correcao.id as idCorrecao, redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) INNER JOIN tb_correcao correcao ON (redacao.id = correcao.id_redacao) WHERE redacao.id = '${req.body.id}' limit 1`
+        let queryRedacao = `select correcao.nota as nota,correcao.observacao, correcao.id as idCorrecao, redacao.id,redacao.caminho_imagem as caminhoImagem, redacao.id_aluno as idaluno,tema.tema as tema, aluno.nome as nome from tb_redacao redacao INNER JOIN tb_aluno aluno ON (redacao.id_aluno = aluno.id) INNER JOIN tb_tema tema ON (redacao.id_tema = tema.id) INNER JOIN tb_correcao correcao ON (redacao.id = correcao.id_redacao) WHERE redacao.id = '${req.body.id}' limit 1`
         console.log(queryRedacao)
         connection.query(queryRedacao, (err, result) => {
             console.log(err)
@@ -497,6 +497,7 @@ app.post('/getRedacaoId', function (req, res) {
                                 nome:result[i]['nome'],
                                 idAluno:result[i]['idaluno'],
                                 idCorrecao:result[i]['idCorrecao'],
+                                descricao:result[i]['observacao'],
                                 nota:result[i]['nota'],
                                 tema:result[i]['tema'],
                                 caminhoImg:base64_encode(result[i]['caminhoImagem']),
