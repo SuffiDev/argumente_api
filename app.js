@@ -992,7 +992,7 @@ app.post('/get_temas', function (req, res) {
     try{
         let currentWeek = currentWeekNumber()
         let currentYear = new Date().getFullYear()
-        let queryTema = `SELECT * FROM tb_tema WHERE ano = '${currentYear}' AND semana < '${currentWeek}' ORDER BY id DESC`
+        let queryTema = `SELECT * FROM tb_tema WHERE ano = '${currentYear}' AND semana < ABS('${currentWeek}') ORDER BY id DESC`
         console.log(queryTema)
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
