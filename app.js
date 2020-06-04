@@ -162,25 +162,29 @@ app.post('/send_redacao', function (req, res) {
 
         fs.writeFile(caminho, req.body.imgPhoto, {encoding: 'base64'}, function(err) {
             if(!err){
-                console.log('entrou aqui e agora eu vou salvar os dados no banco')
-                let dateComplete = getDateTime(dataAtual)
-                let queryRedacao = `INSERT INTO tb_redacao (id_aluno, id_tema, data_criacao, finalizado, caminho_imagem, id_professor) VALUES ('${req.body.idAluno}','${req.body.idTema}','${dateComplete}','0','${caminho}',(select id from tb_professor order by rand() limit 1))`
-                console.log(queryRedacao)
-                connection.query(queryRedacao, (err, result) => {
-                    console.log(err)
-                    if(err){
-                        res.send({'status':'erro','desc':err})
-                    }else{
-                        res.send({'status':'ok','desc':'ok'})
-                    }
-                })
+                try{
+                    console.log('entrou aqui e agora eu vou salvar os dados no banco')
+                    let dateComplete = getDateTime(dataAtual)
+                    let queryRedacao = `INSERT INTO tb_redacao (id_aluno, id_tema, data_criacao, finalizado, caminho_imagem, id_professor) VALUES ('${req.body.idAluno}','${req.body.idTema}','${dateComplete}','0','${caminho}',(select id from tb_professor order by rand() limit 1))`
+                    console.log(queryRedacao)
+                    connection.query(queryRedacao, (err, result) => {
+                        console.log(err)
+                        if(err){
+                            res.send({'status':'erro','desc':err})
+                        }else{
+                            res.send({'status':'ok','desc':'ok'})
+                        }
+                    })
+                }catch(error){
+                    res.send({'status':'erro','desc':erro})
+                }
             }else{
                 res.send({'status':'erro','desc':err})
             }
         });
     }catch(err){
         console.log(err)
-        res.send({'status':'erro','desc':'erro'})
+        res.send({'status':'erro','desc':err})
     }
 })
 //Função que recebe as correçoes das redações
