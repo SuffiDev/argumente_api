@@ -38,6 +38,7 @@ app.post('/register', function (req, res) {
                 let dataRegister = {
                     nome: req.body.nome,
                     sobreNome: req.body.sobreNome,
+                    telefone: req.body.telefone,
                     usuario: req.body.usuario,
                     senha: req.body.senha,
                     email: req.body.email,
@@ -1167,11 +1168,12 @@ function acertaMes(mes){
 //Função que insere um novo aluno na tabela
 function insereAlunos(dataRegister){
     try{
-        let queryAlunos = "INSERT INTO tb_aluno (nome,sobrenome,usuario,senha,email,codigo_acesso,idade,escolaridade,cidade,estado) VALUES ?"
+        let queryAlunos = "INSERT INTO tb_aluno (nome,sobrenome,usuario,telefone,senha,email,codigo_acesso,idade,escolaridade,cidade,estado) VALUES ?"
         let valuesAlunos = [
             dataRegister.nome,
             dataRegister.sobreNome,
             dataRegister.usuario,
+            dataRegister.telefone,
             dataRegister.senha,
             dataRegister.email,
             dataRegister.codigoAcesso,
