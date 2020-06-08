@@ -1022,7 +1022,7 @@ app.post('/get_redacao_tema', function (req, res) {
         console.log(queryTema)
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
-            if (err){
+            if (!err){
                 let jsonRetorno = []
                 for(let i = 0; i < data.length;i++){
                     jsonRetorno.push({
@@ -1033,13 +1033,12 @@ app.post('/get_redacao_tema', function (req, res) {
                     })
                 }
                 console.log(err)
-                res.send( {'status':'erro','desc':err} )
+                res.send( {'status':'ok','desc':jsonRetorno} )
             }else{
-                res.send({'status':'ok','desc':data})
+                res.send({'status':'erro','desc':err})
             }
         })        
     }catch(err){
-        console.log('caiu aqui3' + err)
         res.send({'status':'erro','desc':'erro'})
     }
 })
