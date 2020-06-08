@@ -1029,7 +1029,7 @@ app.post('/get_redacao_tema', function (req, res) {
                         id_aluno:data[i]['id_aluno'],
                         id_tema:data[i]['id_tema'],
                         data_cricao:data[i]['data_criacao'],
-                        numeroRedacao:'' + i,
+                        numeroRedacao:'' + (i + 1),
                     })
                 }
                 console.log(err)
