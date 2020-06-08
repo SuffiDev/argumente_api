@@ -1026,6 +1026,7 @@ app.post('/get_redacao_tema', function (req, res) {
                 let jsonRetorno = []
                 for(let i = 0; i < data.length;i++){
                     jsonRetorno.push({
+                        id:data[i]['id'],
                         id_aluno:data[i]['id_aluno'],
                         id_tema:data[i]['id_tema'],
                         data_cricao:data[i]['data_criacao'],
