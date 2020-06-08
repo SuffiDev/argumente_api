@@ -1014,16 +1014,24 @@ app.post('/get_temas', function (req, res) {
         res.send({'status':'erro','desc':'erro'})
     }
 })
-//Função que pega todos os temas finalizados baseado no id do aluno que requisitou
-app.post('/get_temas_finalizados', function (req, res) {
+//Função que checa se o aluno já enviou uma redação com um tema especifico. Olha também se a redação foi corrigida
+app.post('/get_redacao_tema', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
-        let idAluno = req.body.idAluno
-        let queryTema = `select tema.id as idTema, redacao.id as idRedacao, tema.tema, tema.semana, tema.ano, redacao.id_aluno, redacao.id_tema, correcao.id as idCorrecao FROM tb_tema tema INNER JOIN tb_redacao redacao ON (redacao.id_tema = tema.id) INNER JOIN tb_correcao correcao ON (correcao.id_redacao = redacao.id) WHERE redacao.id_aluno = '${idAluno}'`
+        let queryTema = `SELECT * FROM tb_correcao WHERE id_tema = '${req.body.id}'`
         console.log(queryTema)
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
             if (err){
+                let jsonRetorno = []
+                for(let i = 0; i < data.length;i++){
+                    jsonRetorno.push({
+                        id_aluno:data[i]['id_aluno'],
+                        id_tema:data[i]['id_tema'],
+                        data_cricao:data[i]['data_criacao'],
+                        numeroRedacao:'' + i,
+                    })
+                }
                 console.log(err)
                 res.send( {'status':'erro','desc':err} )
             }else{
@@ -1033,8 +1041,7 @@ app.post('/get_temas_finalizados', function (req, res) {
     }catch(err){
         console.log('caiu aqui3' + err)
         res.send({'status':'erro','desc':'erro'})
-    }
-})
+    
 //Função que pega todos os temas finalizados baseado no id do aluno que requisitou
 app.post('/get_temas_finalizados', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -1057,23 +1064,16 @@ app.post('/get_temas_finalizados', function (req, res) {
     }
 })
 //Função que checa se o aluno já enviou uma redação com um tema especifico. Olha também se a redação foi corrigida
-app.post('/get_redacao_tema', function (req, res) {
+app.post('/get_dados_tema', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
-        let queryTema = `SELECT * FROM tb_correcao WHERE id_tema = '${req.body.id}'`
+        let idAluno = req.body.idAluno
+        let idTema = req.body.idTema
+        let queryTema = `select tema.id as idTema, redacao.id as idRedacao, correcao.id as idCorrecao from tb_tema tema INNER JOIN tb_redacao redacao ON (redacao.id_tema = tema.id) INNER JOIN tb_aluno aluno on (redacao.id_aluno = aluno.id) LEFT JOIN tb_correcao correcao ON (correcao.id_redacao = correcao.id) WHERE aluno.id = '${idAluno}' AND redacao.id = '${idTema}'`
         console.log(queryTema)
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
             if (err){
-                let jsonRetorno = []
-                for(let i = 0; i < data.length;i++){
-                    jsonRetorno.push({
-                        id_aluno:data[i]['id_aluno'],
-                        id_tema:data[i]['id_tema'],
-                        data_cricao:data[i]['data_criacao'],
-                        numeroRedacao:'' + i,
-                    })
-                }
                 console.log(err)
                 res.send( {'status':'erro','desc':err} )
             }else{
