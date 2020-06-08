@@ -1018,7 +1018,7 @@ app.post('/get_temas', function (req, res) {
 app.post('/get_redacao_tema', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
-        let queryTema = `SELECT * FROM tb_correcao WHERE id_tema = '${req.body.id}'`
+        let queryTema = `SELECT * FROM tb_redacao WHERE id_tema = '${req.body.id}'`
         console.log(queryTema)
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
