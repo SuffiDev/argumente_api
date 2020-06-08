@@ -1041,7 +1041,8 @@ app.post('/get_redacao_tema', function (req, res) {
     }catch(err){
         console.log('caiu aqui3' + err)
         res.send({'status':'erro','desc':'erro'})
-    
+    }
+})
 //Função que pega todos os temas finalizados baseado no id do aluno que requisitou
 app.post('/get_temas_finalizados', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
