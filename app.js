@@ -954,7 +954,7 @@ app.post('/get_tema', function (req, res) {
     try{
         //Antes de mais nada eu vejo se o usuario que fez a requisição já não enviou 2 redações
         let queryRedacao = `SELECT COUNT(*) as contador FROM tb_redacao WHERE id_aluno = '${req.body.id}'`
-        connection.query(queryTema,(err, data) => {
+        connection.query(queryRedacao,(err, data) => {
             if(data[0]['contador'] >= 2){
                 res.send( {'status':'limit_redacao','desc':err} )
             }else{
