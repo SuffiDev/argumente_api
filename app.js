@@ -956,7 +956,7 @@ app.post('/get_tema', function (req, res) {
         let queryRedacao = `SELECT COUNT(*) as contador FROM tb_redacao WHERE id_aluno = '${req.body.id}'`
         connection.query(queryRedacao,(err, data) => {
             if(data[0]['contador'] >= 2){
-                res.send( {'status':'limit_redacao','desc':err} )
+                res.send( {'status':'limit_redacao','desc':'limit_redacao'} )
             }else{
                 let currentWeek = currentWeekNumber()
                 //let currentDay = new Date().getDate()
