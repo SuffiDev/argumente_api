@@ -854,7 +854,7 @@ app.post('/deletaRedacao', function (req, res) {
 app.post('/getCorrecao', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
-        let queryTema = `select DATE_FORMAT(correcao.data, '%d/%m/%Y') as data, correcao.id as idCorrecao, correcao.observacao, redacao.caminho_imagem, correcao.nota, redacao.id_tema, tema.tema FROM tb_correcao correcao INNER JOIN tb_redacao redacao ON (redacao.id = correcao.id_redacao) INNER JOIN tb_tema tema ON (tema.id = redacao.id_tema) where redacao.id = '${req.body.id}'`
+        let queryTema = `select DATE_FORMAT(redacao.data, '%d/%m/%Y') as data, correcao.id as idCorrecao, correcao.observacao, redacao.caminho_imagem, correcao.nota, redacao.id_tema, tema.tema FROM tb_correcao correcao INNER JOIN tb_redacao redacao ON (redacao.id = correcao.id_redacao) INNER JOIN tb_tema tema ON (tema.id = redacao.id_tema) where redacao.id = '${req.body.id}'`
         console.log(queryTema)
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
@@ -1018,7 +1018,7 @@ app.post('/get_temas', function (req, res) {
 app.post('/get_redacao_tema', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
-        let queryTema = `SELECT * FROM tb_redacao WHERE id_tema = '${req.body.id}'`
+        let queryTema = `SELECT id, DATE_FORMAT(data_criacao, '%d/%m/%Y') as data_criacao, id_aluno, id_tema FROM tb_redacao WHERE id_tema = '${req.body.id}'`
         console.log(queryTema)
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
@@ -1029,7 +1029,7 @@ app.post('/get_redacao_tema', function (req, res) {
                         id:data[i]['id'],
                         id_aluno:data[i]['id_aluno'],
                         id_tema:data[i]['id_tema'],
-                        data_cricao:data[i]['data_criacao'],
+                        data_criacao:data[i]['data_criacao'],
                         numeroRedacao:'' + (i + 1),
                     })
                 }
