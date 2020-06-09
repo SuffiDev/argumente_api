@@ -854,7 +854,7 @@ app.post('/deletaRedacao', function (req, res) {
 app.post('/getCorrecao', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
-        let queryTema = `select DATE_FORMAT(redacao.data, '%d/%m/%Y') as data, correcao.id as idCorrecao, correcao.observacao, redacao.caminho_imagem, correcao.nota, redacao.id_tema, tema.tema FROM tb_correcao correcao INNER JOIN tb_redacao redacao ON (redacao.id = correcao.id_redacao) INNER JOIN tb_tema tema ON (tema.id = redacao.id_tema) where redacao.id = '${req.body.id}'`
+        let queryTema = `select DATE_FORMAT(redacao.data_criacao, '%d/%m/%Y') as data, correcao.id as idCorrecao, correcao.observacao, redacao.caminho_imagem, correcao.nota, redacao.id_tema, tema.tema FROM tb_correcao correcao INNER JOIN tb_redacao redacao ON (redacao.id = correcao.id_redacao) INNER JOIN tb_tema tema ON (tema.id = redacao.id_tema) where redacao.id = '${req.body.id}'`
         console.log(queryTema)
         connection.query(queryTema,(err, data) => {
             console.log(JSON.stringify(data))
