@@ -984,17 +984,25 @@ app.post('/get_tema', function (req, res) {
 app.post('/get_tema_especifico', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*")
     try{
-        let queryTema = `SELECT * FROM tb_tema WHERE id = '${req.body.idTema}'`
-        console.log(queryTema)
-        connection.query(queryTema,(err, data) => {
-            console.log(JSON.stringify(data))
-            if (err){
-                console.log(err)
-                res.send( {'status':'erro','desc':err} )
+        //Antes de mais nada eu vejo se o usuario que fez a requisição já não enviou 2 redações
+        let queryRedacao = `SELECT COUNT(*) as contador FROM tb_redacao WHERE id_aluno = '${req.body.id}'`
+        connection.query(queryRedacao,(err, data) => {
+            if(data[0]['contador'] >= 2){
+                res.send( {'status':'limit_redacao','desc':'limit_redacao'} )
             }else{
-                res.send({'status':'ok','desc':data})
-            }
-        })        
+                let queryTema = `SELECT * FROM tb_tema WHERE id = '${req.body.idTema}'`
+                console.log(queryTema)
+                connection.query(queryTema,(err, data) => {
+                    console.log(JSON.stringify(data))
+                    if (err){
+                        console.log(err)
+                        res.send( {'status':'erro','desc':err} )
+                    }else{
+                        res.send({'status':'ok','desc':data})
+                    }
+                })       
+            } 
+        })
     }catch(err){
         console.log('caiu aqui3' + err)
         res.send({'status':'erro','desc':'erro'})
